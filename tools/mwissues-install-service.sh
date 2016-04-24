@@ -1,6 +1,11 @@
 #!/bin/sh
 # Author: Bastien Brunnenstein
 
+if [ ! -e tools/issues-mysql.sql ]; then
+  echo 'Make sure you are in the right directory (mwissues-nodejs-server) and try again'
+  return 1
+fi;
+
 # This script must be run as root
 # Parameter 1 is username
 MWUSER=$1

@@ -33,4 +33,10 @@ npm update
 
 # Setup the service
 chmod +x tools/mwissues-install-service.sh
-sudo tools/mwissues-install-service.sh `whoami`
+if [ `groups | grep -c sudo` = '0' ]; then
+  echo 'Please run tools/mwissues-install-service.sh with root access'
+  echo 'You can also do "nodejs index.js" to start the server manually'
+else
+  echo 'Your password may be asked in order to install the service'
+  sudo tools/mwissues-install-service.sh `whoami`
+fi
