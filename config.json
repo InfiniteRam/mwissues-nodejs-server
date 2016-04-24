@@ -1,0 +1,21 @@
+{
+  "port": 3000,
+  "maxScreenshotSize": "5mb",
+
+  "database": "mysql",
+  "mysqlParams": {
+    "host"     : "localhost",
+    "port"     : 3306,
+    "user"     : "mwissues",
+    "password" : "",
+    "database" : "mwissues"
+  },
+
+  "auth": "apikey",
+  "apikeys": {
+    "anonymous": ["view"],
+    "aab3b498ecb8277e": ["view", "create", "update", "delete"],
+    "b2d39d95c5659a9f": ["view", "create", "update"],
+    "facc74b2418cf6c5": ["create"]
+  }
+}

@@ -1,0 +1,275 @@
+
+swagger: '2.0'
+info:
+  title: MwIssues server API
+  description: |
+    Server API used by MwIssues, an issue tracker for Unity game engine.
+    * [Home page](https://infiniteram.com/mwissues/)
+  version: '1.0.0'
+
+host: localhost:3000
+
+#basePath: /issue
+schemes:
+  - http
+
+consumes:
+  - multipart/form-data
+  - application/x-www-form-urlencoded
+  - application/json
+
+
+paths:
+  /issue:
+    get:
+      summary: List existing issues
+      parameters:
+        - name: start
+          in: formData
+          description: Index of the first issue to list. Ignored if _count_ is 0.
+          required: false
+          type: integer
+          default: 1
+        - name: count
+          in: formData
+          description: Maximum number of issues to list. Use 0 to get all issues.
+          required: false
+          type: integer
+          default: 0
+        - name: stateMask
+          in: formData
+          description: Bitmask used to filter issue's states.
+          required: false
+          type: integer
+        - name: categoryMask
+          in: formData
+          description: Bitmask used to filter issue's categories.
+          required: false
+          type: integer
+      produces:
+        - application/json
+      responses:
+        200:
+          description: The list of all issues matching the filters.
+          schema:
+            type: object
+            properties:
+              list:
+                type: array
+                items:
+                  $ref: '#/definitions/Issue'
+    post:
+      summary: Create a new issue
+      parameters:
+        - name: title
+          in: formData
+          required: true
+          type: string
+        - name: description
+          in: formData
+          type: string
+        - name: scene
+          in: formData
+          required: true
+          type: string
+        - name: state
+          in: formData
+          required: true
+          type: integer
+        - name: category
+          in: formData
+          required: true
+          type: integer
+        - name: position
+          in: formData
+          description: Position of the issue in the scene
+          required: true
+          type: string
+          format: X;Y;Z
+        - name: cameraPosition
+          in: formData
+          description: Position of the report camera
+          required: true
+          type: string
+          format: X;Y;Z
+        - name: cameraOrientation
+          in: formData
+          description: Orientation of the report camera
+          required: true
+          type: string
+          format: X;Y;Z;W
+        - name: orthographicSize
+          in: formData
+          description: Vertical size of the orthographic camera. Perspective if not set
+          type: number
+        - name: reporter
+          in: formData
+          description: User who reported the issue
+          required: true
+          type: string
+        - name: assignee
+          in: formData
+          description: User assigned to the issue
+          type: string
+        - name: screenshot
+          in: formData
+          description: Screenshot for the issue
+          required: false
+          type: file
+      produces:
+        - application/json
+      responses:
+        201:
+          description: Issue created
+          schema:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: New issue's identifier
+        400:
+          description: Malformed request (missing or invalid parameters)
+        403:
+          description: Permission denied
+
+  /issue/{issueId}:
+    get:
+      summary: Get an issue
+      parameters:
+        - name: issueId
+          in: path
+          description: Issue identifier
+          required: true
+          type: integer
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Issue's data
+          schema:
+            $ref: '#/definitions/Issue'
+        404:
+          description: Issue not found
+    put:
+      summary: Update an issue
+      parameters:
+        - name: issueId
+          in: path
+          description: Issue identifier
+          required: true
+          type: integer
+        - name: title
+          in: formData
+          type: string
+        - name: description
+          in: formData
+          type: string
+        - name: state
+          in: formData
+          type: integer
+        - name: category
+          in: formData
+          type: integer
+        - name: assignee
+          in: formData
+          description: User assigned to the issue
+          type: string
+      responses:
+        204:
+          description: Issue updated
+        400:
+          description: Malformed request (missing or invalid parameters)
+        403:
+          description: Permission denied
+        404:
+          description: Issue not found
+        409:
+          description: Issue update conflict
+    delete:
+      summary: Delete an issue
+      parameters:
+        - name: issueId
+          in: path
+          description: Issue identifier
+          required: true
+          type: integer
+      responses:
+        204:
+          description: Issue deleted
+        403:
+          description: Permission denied
+        404:
+          description: Issue not found
+
+  /issue/{issueId}/screenshot:
+    get:
+      summary: Issue screenshot
+      parameters:
+        - name: issueId
+          in: path
+          description: Issue identifier
+          required: true
+          type: integer
+      produces:
+        - image/png
+      responses:
+        200:
+          description: The screenshot associated to the issue
+          schema:
+            type: file
+        400:
+          description: Invalid parameter
+        404:
+          description: Issue or screenshot not found
+
+
+definitions:
+  Issue:
+    type: object
+    required:
+      - id
+      - title
+      - scene
+      - state
+      - category
+      - position
+      - cameraPosition
+      - cameraOrientation
+      - reporter
+    properties:
+      id:
+        type: integer
+        description: Issue's unique identifier
+      title:
+        type: string
+      description:
+        type: string
+      scene:
+        type: string
+      state:
+        type: integer
+      category:
+        type: integer
+      position:
+        description: Position of the issue in the scene
+        type: string
+        format: X;Y;Z
+      cameraPosition:
+        description: Position of the report camera
+        type: string
+        format: X;Y;Z
+      cameraOrientation:
+        description: Orientation of the report camera
+        type: string
+        format: X;Y;Z;W
+      orthographicSize:
+        description: Vertical size of the orthographic camera. Perspective if not set
+        type: number
+      reporter:
+        type: string
+        description: User who reported the issue
+      assignee:
+        type: string
+        description: User assigned to the issue
+      hasScreenshot:
+        type: boolean

@@ -1,0 +1,98 @@
+/*
+ * Copyright (c) 2016 Bastien Brunnenstein
+ */
+
+.modal-overlay
+{
+  position: absolute;
+  z-index: 200;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+}
+
+.modal-box
+{
+  position: fixed;
+  z-index: 201;
+  width: 400px;
+  height: 130px;
+  line-height: 130px;
+  top: 50%; 
+  left: 50%;
+  margin-top: -65px;
+  margin-left: -200px;
+  background-color: white;
+  border-radius: 5px;
+  text-align: center;
+  color: black;
+}
+
+.mwissues-logo {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  background-image: url('../img/logo32.png');
+  margin-top: -8px;
+  margin-bottom: -9px;
+  margin-right: 8px;
+}
+
+#issue-list
+{
+}
+
+#issue-list h4
+{
+  margin-top: 4px;
+}
+
+#issue-list p
+{
+  margin-bottom: 0;
+  margin-top: 0.3em;
+}
+
+#issue-list img
+{
+  float: left;
+  max-height: 128px;
+  max-width: 256px;
+  cursor: pointer;
+  margin-right: 12px;
+}
+
+.issue-scene
+{
+  font-size: 0.8em;
+  color: gray;
+}
+
+.issue-description
+{
+  padding-left: 8px;
+}
+
+.enlarge-img
+{
+  float: none !important;
+  max-height: 100% !important;
+  max-width: none !important;
+}
+
+.clear {
+  clear: both;
+  height: 0;
+}
+
+/* State badges */
+
+.issue-badge {
+  display: inline-block;
+  margin-bottom: -3px;
+  margin-right: 8px;
+  width: 20px;
+  height: 20px;
+}
