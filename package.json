@@ -1,10 +1,14 @@
 {
-  "name": "mw-issues-server",
+  "name": "mwissues-server",
   "version": "1.0.0",
-  "description": "Web server for MwIssues",
+  "description": "Server for MwIssues",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/InfiniteRam/mwissues-nodejs-server.git"
   },
   "author": "Bastien Brunnenstein",
   "license": "ISC",

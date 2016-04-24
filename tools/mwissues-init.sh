@@ -12,14 +12,22 @@ fi
 # Short-Description: MwIssues server
 ### END INIT INFO
 
-# Author: Bastien Brunnenstein <bastien@brunnenstein.fr>
+# Author: Bastien Brunnenstein
 
 MWISSUES_USER=pi
 MWISSUES_PATH=~pi/mwissues-nodejs-server
 
 DESC="MwIssues server"
 
-DAEMON=${MWISSUES_PATH}/index.js
+DAEMON="${MWISSUES_PATH}/index.js"
 
-START_ARGS=--background --user ${MWISSUES_USER} --chuid ${MWISSUES_USER} --chdir ${MWISSUES_PATH} --make-pidfile
-STOP_ARGS=--user ${MWISSUES_USER} --remove-pidfile
+PIDFILE="${MWISSUES_PATH}/mwissues.pid"
+
+START_ARGS="--background --user ${MWISSUES_USER} --chuid ${MWISSUES_USER} --chdir ${MWISSUES_PATH} --make-pidfile"
+STOP_ARGS="--user ${MWISSUES_USER}"
+
+do_stop_cmd() {
+    kill `cat $PIDFILE`
+    rm -f $PIDFILE
+    return $?
+}

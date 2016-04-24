@@ -1,4 +1,5 @@
 #!/bin/sh
+# Author: Bastien Brunnenstein
 
 if [ ! -e tools/issues-mysql.sql ]; then
   echo 'Make sure you are in the right directory (mwissues-nodejs-server) and try again'
@@ -20,14 +21,16 @@ EOF
 
 # Update config.json with the MySql password
 mv config.json config.json.old
-sed "s/\(\"password\"\s*=\s*\)\"\"/\1\"${MWPASS}\"/" < config.json.old > config.json
+sed "s%\(\"password\"\)\s*:\s*\".*\"%\1 : \"${MWPASS}\"%" < config.json.old > config.json
 
 # Permissions
 chmod 600 config.json
 chmod +x index.js
 
 # Download the packages for NodeJs
+echo 'Downloading NPM packages...'
 npm update
 
 # Setup the service
-sudo /bin/sh -c "tools/mwissues-install-service.sh `whoami`"
+chmod +x tools/mwissues-install-service.sh
+sudo tools/mwissues-install-service.sh `whoami`
