@@ -105,8 +105,8 @@ function doConnect() {
         return;
       }
 
-      if (permissions.indexOf("admin") === -1
-        && permissions.indexOf("view") === -1) {
+      if (aPermissions.indexOf("admin") === -1
+        && aPermissions.indexOf("view") === -1) {
         bAuth.toggle(true);
         showError("You don't have the permission to view the issue list");
         return;

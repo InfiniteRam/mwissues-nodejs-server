@@ -116,6 +116,21 @@ app.post('/', upload.single('screenshot'), auth.enforce('create'), function (req
 
 
 // #################################
+//            SPECIAL
+// #################################
+// This group has to be before the individual issues
+// or the parameterized URL will catch everything
+
+// Authentication, return
+// { valid: bool, permissions: [''] }
+app.get('/auth', function (req, res) {
+  auth.getAuth(req, function(authData) {
+    res.json(authData);
+  });
+});
+
+
+// #################################
 //         INDIVIDUAL ISSUES
 // #################################
 
@@ -223,19 +238,6 @@ app.get('/:issueId/screenshot', auth.enforce('view'), function (req, res) {
         console.log(err);
         res.status(err.status).end();
       }
-  });
-});
-
-
-// #################################
-//            SPECIAL
-// #################################
-
-// Authentication, return
-// { valid: bool, permissions: [''] }
-app.get('/auth', function (req, res) {
-  auth.getAuth(req, function(authData) {
-    res.json(authData);
   });
 });
 
