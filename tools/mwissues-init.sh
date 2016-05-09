@@ -21,7 +21,7 @@ DESC="MwIssues server"
 
 DAEMON="${MWISSUES_PATH}/index.js"
 
-PIDFILE="${MWISSUES_PATH}/mwissues.pid"
+PIDFILE="/run/mwissues.pid"
 
 START_ARGS="--background --user ${MWISSUES_USER} --chuid ${MWISSUES_USER} --chdir ${MWISSUES_PATH} --make-pidfile"
 STOP_ARGS="--user ${MWISSUES_USER}"

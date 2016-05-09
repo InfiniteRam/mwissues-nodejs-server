@@ -1,5 +1,7 @@
 /*
  * Copyright (c) 2016 Bastien Brunnenstein
+ * This source code is licensed under the BSD 3-Clause License found in the
+ * LICENSE file in the root directory of this repository.
  */
 
 .modal-overlay
@@ -95,4 +97,23 @@
   margin-right: 8px;
   width: 20px;
   height: 20px;
+}
+
+/* */
+
+#b-error {
+  color: maroon;
+  padding-bottom: 20px;
+  margin-bottom: 16px;
+  background: #FDD;
+}
+
+.auth-field {
+  clear: both;
+  margin-bottom: 8px;
+}
+
+.auth-field > input {
+  float: right;
+  width: 50%;
 }

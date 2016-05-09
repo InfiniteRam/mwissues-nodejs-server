@@ -1,5 +1,7 @@
 /*
  * Copyright (c) 2016 Bastien Brunnenstein
+ * This source code is licensed under the BSD 3-Clause License found in the
+ * LICENSE file in the root directory of this repository.
  */
 
 var config = require('./config.json');
@@ -47,6 +49,7 @@ var issuesdb = require('./database-'+ config.database);
 
 // Authentication
 var auth = require('./auth-'+ config.auth);
+app.use(auth.sanitize);
 
 
 // #################################
@@ -54,7 +57,7 @@ var auth = require('./auth-'+ config.auth);
 // #################################
 
 // Get list
-app.get('/', auth('view'), function (req, res) {
+app.get('/', auth.enforce('view'), function (req, res) {
 
   issuesdb.listIssues({}, function(err, list) {
 
@@ -72,7 +75,7 @@ app.get('/', auth('view'), function (req, res) {
 
 // Insert issue
 // Upload must happen before auth to extract parameters from formdata
-app.post('/', upload.single('screenshot'), auth('create'), function (req, res, next) {
+app.post('/', upload.single('screenshot'), auth.enforce('create'), function (req, res, next) {
 
   var issue = issues.validateInput(req.body);
 
@@ -110,7 +113,6 @@ app.post('/', upload.single('screenshot'), auth('create'), function (req, res, n
     fs.unlink(req.file.path, function(){});
 
 });
-
 
 
 // #################################
@@ -151,11 +153,11 @@ app.param('issueId', function(req, res, next, id) {
 });
 
 
-app.get('/:issueId', auth('view'), function (req, res) {
+app.get('/:issueId', auth.enforce('view'), function (req, res) {
   res.json(issues.formatOutput(req.issue));
 });
 
-app.put('/:issueId', auth('update'), function (req, res) {
+app.put('/:issueId', auth.enforce('update'), function (req, res) {
 
   var updatedIssue = req.body;
 
@@ -183,7 +185,7 @@ app.put('/:issueId', auth('update'), function (req, res) {
 
 });
 
-app.delete('/:issueId', auth('delete'), function (req, res) {
+app.delete('/:issueId', auth.enforce('delete'), function (req, res) {
 
   issuesdb.deleteIssue(req.issue.id, function(err, issue) {
 
@@ -207,7 +209,7 @@ app.delete('/:issueId', auth('delete'), function (req, res) {
 });
 
 
-app.get('/:issueId/screenshot', auth('view'), function (req, res) {
+app.get('/:issueId/screenshot', auth.enforce('view'), function (req, res) {
 
   if (typeof(req.issue.screenshot) === 'undefined')
   {
@@ -221,6 +223,19 @@ app.get('/:issueId/screenshot', auth('view'), function (req, res) {
         console.log(err);
         res.status(err.status).end();
       }
+  });
+});
+
+
+// #################################
+//            SPECIAL
+// #################################
+
+// Authentication, return
+// { valid: bool, permissions: [''] }
+app.get('/auth', function (req, res) {
+  auth.getAuth(req, function(authData) {
+    res.json(authData);
   });
 });
 

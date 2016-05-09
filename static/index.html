@@ -69,7 +69,36 @@
       </div><!-- /.container-fluid -->
     </nav>
 
-    <div class="container">
+    <div class="container" id="b-error" style="display:none">
+      <div class="row">
+        <div class="col-md-6 col-md-push-3">
+          <h1>Something went wrong</h1>
+          <div id="issue-error-text">Error text</div>
+          <a href="#" onclick="javascript:mwCloseError(); return false">Close</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" id="b-loading">
+      <center><h2>Please wait...</h2></center>
+    </div>
+
+    <div class="container" id="b-auth" style="display:none">
+      <h1>Authentication</h1>
+      <div class="row">
+        <div class="col-md-4 col-md-push-4">
+          <div class="auth-field"><b>User name</b><input id="issue-user" type="text"></div>
+          <div class="auth-field"><b>API Key</b><input id="issue-key" type="password"></div>
+          <div><input id="issue-remember" type="checkbox"> Remember my credentials</div>
+          <br>
+          <a class="btn btn-default btn-block" onclick="javascript:mwConnect()">Login</a>
+          <hr>
+          <a class="btn btn-default btn-block" onclick="javascript:mwConnectAnon()">Anonymous login</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" id="b-issues" style="display:none">
       <div class="row">
         <div class="col-md-3 col-md-push-9">
           <h2>Filter</h2>

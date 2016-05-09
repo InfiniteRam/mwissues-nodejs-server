@@ -1,5 +1,7 @@
 /*
  * Copyright (c) 2016 Bastien Brunnenstein
+ * This source code is licensed under the BSD 3-Clause License found in the
+ * LICENSE file in the root directory of this repository.
  */
 
 // Enums from C#
@@ -36,20 +38,102 @@ function categoryFromInt(i) {
 }
 
 
+// HTML blocks
+var bLoading = $("#b-loading");
+var bError = $("#b-error");
+var bAuth = $("#b-auth");
+var bIssues = $("#b-issues");
+
+
+// Auth
+var aAnon;
+var aUsername;
+var aApiKey;
+
+var aPermissions;
+
+
 // Global issue list
 var issueList = {};
+var issueListFiltered = {};
 
 
-function loadAllIssues(cb) {
-  $.ajax({
-    method: "GET",
-    url: "issue",
-    dataType: "json"
-  })
+// Hooks
+function mwConnect() {
+  bLoading.toggle(true);
+  bAuth.toggle(false);
+
+  aAnon = false;
+  aUsername = $("#issue-user").val();
+  aApiKey = $("#issue-key").val();
+
+  if ($("#issue-remember").is(':checked')) {
+    localStorage.setItem("user", aUsername);
+    localStorage.setItem("key", aApiKey);
+  }
+
+  doConnect();
+}
+
+function mwConnectAnon() {
+  bLoading.toggle(true);
+  bAuth.toggle(false);
+
+  aAnon = true;
+  aUsername = "Anonymous";
+  aApiKey = "";
+
+  doConnect();
+}
+
+function mwCloseError() {
+  bError.toggle(false);
+}
+
+
+// Flow
+function doConnect() {
+  // Load all issues
+  ajaxAuth()
+    .always(function() {
+      bLoading.toggle(false);
+    })
     .done(function( result ) {
-      issueList = result.list;
-      cb();
+      if (!aAnon && !result.valid) {
+        bAuth.toggle(true);
+        showError("Authentication failed");
+        return;
+      }
+
+      if (permissions.indexOf("admin") === -1
+        && permissions.indexOf("view") === -1) {
+        bAuth.toggle(true);
+        showError("You don't have the permission to view the issue list");
+        return;
+      }
+
+      bLoading.toggle(true);
+      ajaxRefreshIssues()
+        .always(function() {
+          bLoading.toggle(false);
+        })
+        .done(function() {
+          bIssues.toggle(true);
+        })
+        .fail(function() {
+          bAuth.toggle(true);
+        });
+    })
+    .fail(function() {
+      bAuth.toggle(true);
     });
+}
+
+
+// Content creation
+function showError(message) {
+  $("#issue-error-text").text(message);
+  bError.toggle(true);
 }
 
 function createDomForIssue(issue) {
@@ -111,13 +195,55 @@ function rebuildIssueList() {
 }
 
 
+// Ajax calls
+function ajaxAuth() {
+  return $.ajax({
+    method: "GET",
+    url: "issue/auth",
+    dataType: "json",
+    data: { user: aUsername, key: aApiKey }
+  })
+    .done(function( result ) {
+      aPermissions = result.permissions;
+    })
+    .fail(function( xhr ) {
+      showError("Request failed : "+ xhr.statusText);
+      console.error(xhr);
+    });
+}
+
+function ajaxRefreshIssues() {
+  return $.ajax({
+    method: "GET",
+    url: "issue",
+    dataType: "json",
+    data: { user: aUsername, key: aApiKey }
+  })
+    .done(function( result ) {
+      issueList = result.list;
+      rebuildIssueList();
+    })
+    .fail(function( xhr ) {
+      showError("Request failed : "+ xhr.statusText);
+      console.error(xhr);
+    });
+}
+
+
 $(document).ready(function() {
-  // Load all issues
-  loadAllIssues(rebuildIssueList);
+  bLoading.toggle(false);
+  bAuth.toggle(true);
+
+  var user = localStorage.getItem("user");
+  if (user) { $("#issue-user").val(user); }
+
+  var key = localStorage.getItem("key");
+  if (key) { $("#issue-key").val(key); }
+
+})
 
   // Install handlers
   // When the user click on a screenshot, enlarge it
-  $("#issue-list").delegate("div img", "click", function() {
+  /*$("#issue-list").delegate("div img", "click", function() {
     $( this ).toggleClass( "enlarge-img" );
-  });
-})
+  });*/
