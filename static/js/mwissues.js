@@ -289,8 +289,8 @@ function updateFilters() {
   issueList.forEach(function(issue) {
     if (fScene && issue.scene !== fScene) return;
     if (fReporter && issue.reporter !== fReporter) return;
-    if (fAssignee && ((!issue.assignee && fAssignee === "-")
-        || issue.assignee !== fAssignee)) return;
+    if (fAssignee && ((!issue.assignee && fAssignee !== "-")
+        || (issue.assignee && issue.assignee !== fAssignee))) return;
     if ((fState & issue.state) === 0) return;
     if ((fCategory & issue.category) === 0) return;
 
