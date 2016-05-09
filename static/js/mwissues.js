@@ -263,6 +263,12 @@ function updateFilters() {
   fScene = $("#scene-filter").val();
   if (fScene === "*") fScene = null;
 
+  fReporter = $("#reporter-filter").val();
+  if (fReporter === "*") fReporter = null;
+
+  fAssignee = $("#assignee-filter").val();
+  if (fAssignee === "*") fAssignee = null;
+
   fState = 0;
   if (!$("#state-new").hasClass("filter-disabled")) fState |= State.New;
   if (!$("#state-confirmed").hasClass("filter-disabled")) fState |= State.Confirmed;
