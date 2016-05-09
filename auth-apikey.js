@@ -48,7 +48,11 @@ module.exports = {
     //req.auth_user = req.body.user;
     req.auth_key = req.body.key;
 
-    // Delete the auth data so it will never be consumed
+    // Check in query if not found in body
+    //if (!req.auth_user) req.auth_user = req.query.user;
+    if (!req.auth_key) req.auth_key = req.query.key;
+
+    // Delete the auth data from the body so it will never be consumed
     delete req.body.user;
     delete req.body.key;
 
