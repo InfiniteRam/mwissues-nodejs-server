@@ -9,41 +9,83 @@ var config = require('./config.json');
 var apikeys = config.apikeys;
 
 
-// mode can be:
-//	view
-//	create
-//	update
-//	delete
+// Permissions can be:
+//  admin
+//  view
+//  create
+//  update
+//  delete
 
-function check(key, mode) {
 
-  var group = apikeys[key];
-  if (!group) {
-    group = apikeys['anonymous'];
-  
-    if (!group) return false;
+var anonymousPerms = apikeys['anonymous'];
+if (!anonymousPerms) anonymousPerms = [];
+
+function getPerms(key) {
+  return apikeys[key];
+}
+
+function check(key, perm) {
+
+  var permissions = getPerms(key);
+  if (!permissions) {
+    permissions = anonymousPerms;
   }
 
-  if (group.indexOf(mode) !== -1) return true;
+  if (permissions.indexOf('admin') !== -1) return true;
+  if (permissions.indexOf(perm) !== -1) return true;
 
   return false;
 }
 
 
-module.exports = function(mode) {
+module.exports = {
+
+  // Express middleware called for every request
+  // Use this to sanitize the user / key
+  // Do not perform auth checks here
+  sanitize: function(req, res, next) {
+    // Only key is used, user is ignored
+    //req.auth_user = req.body.user;
+    req.auth_key = req.body.key;
+
+    // Delete the auth data so it will never be consumed
+    delete req.body.user;
+    delete req.body.key;
+
+    next();
+  },
+
+  // Validate a request and callback with param:
+  // { valid: bool, permissions: [''] }
+  // Callback must always be called
+  getAuth: function(req, callback) {
+    var valid = true;
+    var perms = getPerms(req.auth_key);
+
+    if (!perms) {
+      valid = false;
+      perms = anonymousPerms;
+    }
+
+    callback({ valid: valid, permissions: perms });
+  },
 
   // Express middleware that verifies the API Key
-  // Return an error if auth has failed
-	return function(req, res, next) {
+  // Return an error if auth has failed for given mode
+  enforce: function(mode) {
+    return function(req, res, next) {
 
-		if (check(req.body.key, mode)) {
-      delete req.body.key;
-			next();
-		}
-		else {
-			res.status(403).send('Premission denied');
-      next('Premission denied');
-		}
-	}
+      if (check(req.auth_key, mode)) {
+        next(); // OK, continue
+      }
+      else {
+        // Send an error
+        res.status(403).send('Premission denied');
+
+        // Continue in error (important for cleanup)
+        next('Premission denied');
+      }
+    }
+  }
 
 };

@@ -23,6 +23,8 @@ paths:
   /issue:
     get:
       summary: List existing issues
+      security:
+        - apiKey: []
       parameters:
         - name: start
           in: formData
@@ -60,6 +62,8 @@ paths:
                   $ref: '#/definitions/Issue'
     post:
       summary: Create a new issue
+      security:
+        - apiKey: []
       parameters:
         - name: title
           in: formData
@@ -135,6 +139,8 @@ paths:
   /issue/{issueId}:
     get:
       summary: Get an issue
+      security:
+        - apiKey: []
       parameters:
         - name: issueId
           in: path
@@ -152,6 +158,8 @@ paths:
           description: Issue not found
     put:
       summary: Update an issue
+      security:
+        - apiKey: []
       parameters:
         - name: issueId
           in: path
@@ -187,6 +195,8 @@ paths:
           description: Issue update conflict
     delete:
       summary: Delete an issue
+      security:
+        - apiKey: []
       parameters:
         - name: issueId
           in: path
@@ -204,6 +214,8 @@ paths:
   /issue/{issueId}/screenshot:
     get:
       summary: Issue screenshot
+      security:
+        - apiKey: []
       parameters:
         - name: issueId
           in: path
@@ -221,6 +233,33 @@ paths:
           description: Invalid parameter
         404:
           description: Issue or screenshot not found
+
+  /issue/auth:
+    get:
+      summary: Check authentication credentials
+      security:
+        - apiKey: []
+      produces:
+        - application/json
+      responses:
+        200:
+          description: The result and permissions
+          schema:
+            type: object
+            required:
+              - valid
+              - permissions
+            properties:
+              valid:
+                type: boolean
+                description: true if the credentials are valid
+              permissions:
+                type: array
+                description: List of permissions granted to these credentials
+                items:
+                  type: string
+        400:
+          description: Invalid parameter
 
 
 definitions:
@@ -273,3 +312,12 @@ definitions:
         description: User assigned to the issue
       hasScreenshot:
         type: boolean
+
+securityDefinitions:
+  apiKey:
+    type: apiKey
+    description:
+      An additional `user` value corresponding to the username is sent by the MwIssues client,
+      but it is not used by the default implementation, which only checks the API key.
+    in: query
+    name: key

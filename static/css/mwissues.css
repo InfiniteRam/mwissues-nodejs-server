@@ -98,3 +98,22 @@
   width: 20px;
   height: 20px;
 }
+
+/* */
+
+#b-error {
+  color: maroon;
+  padding-bottom: 20px;
+  margin-bottom: 16px;
+  background: #FDD;
+}
+
+.auth-field {
+  clear: both;
+  margin-bottom: 8px;
+}
+
+.auth-field > input {
+  float: right;
+  width: 50%;
+}
