@@ -42,6 +42,13 @@
   margin-right: 8px;
 }
 
+#b-error {
+  color: maroon;
+  padding-bottom: 20px;
+  margin-bottom: 16px;
+  background: #FDD;
+}
+
 #issue-list
 {
 }
@@ -99,14 +106,7 @@
   height: 20px;
 }
 
-/* */
-
-#b-error {
-  color: maroon;
-  padding-bottom: 20px;
-  margin-bottom: 16px;
-  background: #FDD;
-}
+/* Auth */
 
 .auth-field {
   clear: both;
@@ -116,4 +116,90 @@
 .auth-field > input {
   float: right;
   width: 50%;
+}
+
+/* Filters */
+
+.filters-cont > div {
+  margin-bottom: 2px;
+}
+
+#scene-filter {
+  width: 100%;
+}
+
+#reporter-filter {
+  width: 100%;
+}
+
+#assignee-filter {
+  width: 100%;
+}
+
+#issue-cat-cont > a {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  border-radius: 4px;
+  margin-right: 3px;
+  border: 1px solid gray;
+
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+#issue-cat-cont > a:hover {
+  border-color: black;
+}
+
+.filter-disabled {
+  opacity: 0.3;
+}
+
+#cat-red {
+  background-color: red;
+}
+
+#cat-orange {
+  background-color: orange;
+}
+
+#cat-yellow {
+  background-color: yellow;
+}
+
+#cat-green {
+  background-color: lime;
+}
+
+#cat-cyan {
+  background-color: aqua;
+}
+
+#cat-blue {
+  background-color: #35F;
+}
+
+#cat-purple {
+  background-color: #C2C;
+}
+
+
+#issue-state-cont {
+  padding-bottom: 8px;
+}
+
+#issue-state-cont > a {
+  border: 1px solid gray;
+
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
+#issue-state-cont > a:hover {
+  border-color: black;
 }

@@ -50,19 +50,7 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="mwissues-navbar-collapse-1">
           <ul class="nav navbar-nav navbar-right">
-            <li class="active"><a href="#">Issue list <span class="sr-only">(current)</span></a></li>
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="#">Action</a></li>
-                <li><a href="#">Another action</a></li>
-                <li><a href="#">Something else here</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="#">Separated link</a></li>
-                <li role="separator" class="divider"></li>
-                <li><a href="#">One more separated link</a></li>
-              </ul>
-            </li>
+            <!-- <li class="active"><a href="#">Issue list <span class="sr-only">(current)</span></a></li> -->
             <li><a href="https://infiniteram.com/mwissues/">Documentation</a></li>
           </ul>
         </div><!-- /.navbar-collapse -->
@@ -100,12 +88,35 @@
 
     <div class="container" id="b-issues" style="display:none">
       <div class="row">
-        <div class="col-md-3 col-md-push-9">
+        <div class="col-md-3 col-md-push-9 filters-cont">
           <h2>Filter</h2>
-          <input type="checkbox" aria-label="...">
-          <a class="btn btn-default btn-xs btn-block">Mini button</a>
-          <a class="btn btn-default btn-sm btn-block">Small button</a>
-          <a class="btn btn-default btn-block">Default button</a>
+          <div id="issue-state-cont">
+            <a id="state-new" class="label label-success">New</a>
+            <a id="state-confirmed" class="label label-primary">Confirmed</a>
+            <a id="state-pending" class="label label-info">Pending</a>
+            <a id="state-resolved" class="label label-danger">Resolved</a>
+          </div>
+          <div id="issue-cat-cont">
+            <a id="cat-red"></a>
+            <a id="cat-orange"></a>
+            <a id="cat-yellow"></a>
+            <a id="cat-green"></a>
+            <a id="cat-cyan"></a>
+            <a id="cat-blue"></a>
+            <a id="cat-purple"></a>
+          </div>
+          <div>
+            Scene :
+            <select id="scene-filter" onchange="javascript:mwUpdateFilters()"></select>
+          </div>
+          <div>
+            Reporter :
+            <select id="reporter-filter" onchange="javascript:mwUpdateFilters()"></select>
+          </div>
+          <div>
+            Assignee :
+            <select id="assignee-filter" onchange="javascript:mwUpdateFilters()"></select>
+          </div>
         </div>
         <div class="col-md-9 col-md-pull-3">
           <h2>Issue list</h2>

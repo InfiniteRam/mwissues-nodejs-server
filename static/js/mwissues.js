@@ -54,8 +54,20 @@ var aPermissions;
 
 
 // Global issue list
-var issueList = {};
-var issueListFiltered = {};
+var issueList;
+var issueListFiltered;
+
+var scenes;
+var reporters;
+var assignees;
+
+
+// Filters
+var fScene = null;
+var fReporter = null;
+var fAssignee = null;
+var fState;
+var fCategory;
 
 
 // Hooks
@@ -67,12 +79,15 @@ function mwConnect() {
   aUsername = $("#issue-user").val();
   aApiKey = $("#issue-key").val();
 
+  doConnect();
+
   if ($("#issue-remember").is(':checked')) {
     localStorage.setItem("user", aUsername);
     localStorage.setItem("key", aApiKey);
   }
-
-  doConnect();
+  else {
+    localStorage.clear();
+  }
 }
 
 function mwConnectAnon() {
@@ -88,6 +103,11 @@ function mwConnectAnon() {
 
 function mwCloseError() {
   bError.toggle(false);
+}
+
+function mwUpdateFilters() {
+  updateFilters();
+  rebuildIssueList();
 }
 
 
@@ -185,11 +205,98 @@ function createDomForIssue(issue) {
   return dom;
 }
 
+
+function refreshIssueList(list) {
+  issueList = list;
+
+  // Find every unique scene / reporter / assignee
+  scenes = [];
+  reporters = [];
+  assignees = [];
+
+  issueList.forEach(function(issue) {
+    if (scenes.indexOf(issue.scene) === -1)
+      scenes.push(issue.scene);
+    if (reporters.indexOf(issue.reporter) === -1)
+      reporters.push(issue.reporter);
+    if (issue.assignee && assignees.indexOf(issue.assignee) === -1)
+      assignees.push(issue.assignee);
+  });
+
+  scenes.sort();
+  reporters.sort();
+  assignees.sort();
+
+  // Regex to remove "Assets/"
+  var ex = /^Assets\//;
+
+  var sceneSelect = $("#scene-filter");
+  sceneSelect.html("");
+  sceneSelect.append($("<option>").prop("value", "*").text("Show everything"));
+  scenes.forEach(function(scene) {
+    sceneSelect.append($("<option>").prop("value", scene).text(
+      !!ex.exec(scene) ? scene.substr(7) : scene));
+  });
+  if (fScene) sceneSelect.val(fScene);
+
+  var reporterSelect = $("#reporter-filter");
+  reporterSelect.html("");
+  reporterSelect.append($("<option>").prop("value", "*").text("Show everything"));
+  reporters.forEach(function(reporter) {
+    reporterSelect.append($("<option>").prop("value", reporter).text(reporter));
+  });
+  if (fReporter) reporterSelect.val(fReporter);
+
+  var assigneeSelect = $("#assignee-filter");
+  assigneeSelect.html("");
+  assigneeSelect.append($("<option>").prop("value", "*").text("Show everything"));
+  assigneeSelect.append($("<option>").prop("value", "-").text("Only show unassigned issues"));
+  assignees.forEach(function(assignee) {
+    assigneeSelect.append($("<option>").prop("value", assignee).text(assignee));
+  });
+  if (fAssignee) assigneeSelect.val(fAssignee);
+
+  updateFilters();
+}
+
+function updateFilters() {
+  fScene = $("#scene-filter").val();
+  if (fScene === "*") fScene = null;
+
+  fState = 0;
+  if (!$("#state-new").hasClass("filter-disabled")) fState |= State.New;
+  if (!$("#state-confirmed").hasClass("filter-disabled")) fState |= State.Confirmed;
+  if (!$("#state-pending").hasClass("filter-disabled")) fState |= State.Pending;
+  if (!$("#state-resolved").hasClass("filter-disabled")) fState |= State.Resolved;
+
+  fCategory = 0;
+  if (!$("#cat-red").hasClass("filter-disabled")) fCategory |= Category.Red;
+  if (!$("#cat-orange").hasClass("filter-disabled")) fCategory |= Category.Orange;
+  if (!$("#cat-yellow").hasClass("filter-disabled")) fCategory |= Category.Yellow;
+  if (!$("#cat-green").hasClass("filter-disabled")) fCategory |= Category.Green;
+  if (!$("#cat-cyan").hasClass("filter-disabled")) fCategory |= Category.Cyan;
+  if (!$("#cat-blue").hasClass("filter-disabled")) fCategory |= Category.Blue;
+  if (!$("#cat-purple").hasClass("filter-disabled")) fCategory |= Category.Purple;
+
+  issueListFiltered = [];
+
+  issueList.forEach(function(issue) {
+    if (fScene && issue.scene !== fScene) return;
+    if (fReporter && issue.reporter !== fReporter) return;
+    if (fAssignee && ((!issue.assignee && fAssignee === "-")
+        || issue.assignee !== fAssignee)) return;
+    if ((fState & issue.state) === 0) return;
+    if ((fCategory & issue.category) === 0) return;
+
+    issueListFiltered.push(issue);
+  });
+}
+
 function rebuildIssueList() {
   var list = $("#issue-list");
   list.html("");
 
-  issueList.forEach(function(issue) {
+  issueListFiltered.forEach(function(issue) {
     list.append(createDomForIssue(issue));
   });
 }
@@ -220,7 +327,7 @@ function ajaxRefreshIssues() {
     data: { user: aUsername, key: aApiKey }
   })
     .done(function( result ) {
-      issueList = result.list;
+      refreshIssueList(result.list);
       rebuildIssueList();
     })
     .fail(function( xhr ) {
@@ -234,16 +341,28 @@ $(document).ready(function() {
   bLoading.toggle(false);
   bAuth.toggle(true);
 
-  var user = localStorage.getItem("user");
-  if (user) { $("#issue-user").val(user); }
+  // Hooks
+  $("#issue-cat-cont > a").on("click", function(event) {
+    $(this).toggleClass("filter-disabled");
+    mwUpdateFilters();
+  });
+  $("#issue-state-cont > a").on("click", function(event) {
+    $(this).toggleClass("filter-disabled");
+    mwUpdateFilters();
+  });
 
+  // Disable resolved by default
+  $("#state-resolved").toggleClass("filter-disabled");
+
+  // Load credentials from localStorage
   var key = localStorage.getItem("key");
-  if (key) { $("#issue-key").val(key); }
+  if (key) {
+    $("#issue-key").val(key);
+
+    $("#issue-remember").prop('checked', true);
+
+    var user = localStorage.getItem("user");
+    if (user) { $("#issue-user").val(user); }
+  }
 
 })
-
-  // Install handlers
-  // When the user click on a screenshot, enlarge it
-  /*$("#issue-list").delegate("div img", "click", function() {
-    $( this ).toggleClass( "enlarge-img" );
-  });*/
