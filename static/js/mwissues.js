@@ -286,7 +286,9 @@ function updateFilters() {
 
   issueListFiltered = [];
 
+  // Check each issue against the filters
   issueList.forEach(function(issue) {
+
     if (fScene && issue.scene !== fScene) return;
     if (fReporter && issue.reporter !== fReporter) return;
     if (fAssignee && ((!issue.assignee && fAssignee !== "-")

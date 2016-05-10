@@ -194,7 +194,7 @@ app.put('/:issueId', auth.enforce('update'), function (req, res) {
     }
 
     // TODO
-    console.log('#'+ id +' updated by '+ 'TODO' +'@'+ req.ip);
+    console.log('#'+ req.issue.id +' updated by '+ 'TODO' +'@'+ req.ip);
     res.status(204).send('Updated');
   });
 
@@ -217,7 +217,7 @@ app.delete('/:issueId', auth.enforce('delete'), function (req, res) {
     }
 
     // TODO
-    console.log('#'+ id +' deleted by '+ 'TODO' +'@'+ req.ip);
+    console.log('#'+ req.issue.id +' deleted by '+ 'TODO' +'@'+ req.ip);
     res.status(204).send('Deleted');
   });
 
