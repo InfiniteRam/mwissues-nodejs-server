@@ -49,7 +49,6 @@ var issuesdb = require('./database-'+ config.database);
 
 // Authentication
 var auth = require('./auth-'+ config.auth);
-app.use(auth.sanitize);
 
 
 // #################################
@@ -57,7 +56,7 @@ app.use(auth.sanitize);
 // #################################
 
 // Get list
-app.get('/', auth.enforce('view'), function (req, res) {
+app.get('/', auth.sanitize, auth.enforce('view'), function (req, res) {
 
   issuesdb.listIssues({}, function(err, list) {
 
@@ -75,7 +74,8 @@ app.get('/', auth.enforce('view'), function (req, res) {
 
 // Insert issue
 // Upload must happen before auth to extract parameters from formdata
-app.post('/', upload.single('screenshot'), auth.enforce('create'), function (req, res, next) {
+app.post('/', upload.single('screenshot'), auth.sanitize, auth.enforce('create'),
+    function (req, res, next) {
 
   var issue = issues.validateInput(req.body);
 
@@ -123,7 +123,7 @@ app.post('/', upload.single('screenshot'), auth.enforce('create'), function (req
 
 // Authentication, return
 // { valid: bool, permissions: [''] }
-app.get('/auth', function (req, res) {
+app.get('/auth', auth.sanitize, function (req, res) {
   auth.getAuth(req, function(authData) {
     res.json(authData);
   });
@@ -168,11 +168,14 @@ app.param('issueId', function(req, res, next, id) {
 });
 
 
-app.get('/:issueId', auth.enforce('view'), function (req, res) {
+app.get('/:issueId', auth.sanitize, auth.enforce('view'),
+    function (req, res) {
+
   res.json(issues.formatOutput(req.issue));
 });
 
-app.put('/:issueId', auth.enforce('update'), function (req, res) {
+app.put('/:issueId', auth.sanitize, auth.enforce('update'),
+    function (req, res) {
 
   var updatedIssue = req.body;
 
@@ -200,7 +203,8 @@ app.put('/:issueId', auth.enforce('update'), function (req, res) {
 
 });
 
-app.delete('/:issueId', auth.enforce('delete'), function (req, res) {
+app.delete('/:issueId', auth.sanitize, auth.enforce('delete'),
+    function (req, res) {
 
   issuesdb.deleteIssue(req.issue.id, function(err, issue) {
 
@@ -224,7 +228,8 @@ app.delete('/:issueId', auth.enforce('delete'), function (req, res) {
 });
 
 
-app.get('/:issueId/screenshot', auth.enforce('view'), function (req, res) {
+app.get('/:issueId/screenshot', auth.sanitize, auth.enforce('view'),
+    function (req, res) {
 
   if (typeof(req.issue.screenshot) === 'undefined')
   {
