@@ -25,34 +25,11 @@ paths:
       summary: List existing issues
       security:
         - apiKey: []
-      parameters:
-        - name: start
-          in: formData
-          description: Index of the first issue to list. Ignored if _count_ is 0.
-          required: false
-          type: integer
-          default: 1
-        - name: count
-          in: formData
-          description: Maximum number of issues to list. Use 0 to get all issues.
-          required: false
-          type: integer
-          default: 0
-        - name: stateMask
-          in: formData
-          description: Bitmask used to filter issue's states.
-          required: false
-          type: integer
-        - name: categoryMask
-          in: formData
-          description: Bitmask used to filter issue's categories.
-          required: false
-          type: integer
       produces:
         - application/json
       responses:
         200:
-          description: The list of all issues matching the filters.
+          description: The list of all issues.
           schema:
             type: object
             properties:
