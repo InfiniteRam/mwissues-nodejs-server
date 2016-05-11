@@ -17,6 +17,7 @@
     "express": "^4.13.4",
     "method-override": "^2.3.5",
     "multer": "^1.1.0",
-    "mysql": "^2.10.2"
+    "mysql": "^2.10.2",
+    "winston": "^2.2.0"
   }
 }

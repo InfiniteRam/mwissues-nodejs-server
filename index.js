@@ -13,10 +13,12 @@ var app = express();
 
 var issues = require('./issues-server');
 
+var logger = require('./logger');
+
 app.use(express.static('static'));
 
 app.use('/issue', issues);
 
 app.listen(config.port, function () {
-  console.log('MwIssues server listening on port '+ config.port +'!');
+  logger.info('MwIssues server listening on port '+ config.port +'!');
 });

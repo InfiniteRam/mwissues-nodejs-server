@@ -8,6 +8,8 @@ var config = require('./config.json');
 
 var issues = require('./issues');
 
+var logger = require('./logger');
+
 var fs = require('fs');
 
 var express = require('express');
@@ -62,7 +64,7 @@ app.get('/', auth.sanitize, auth.enforce('view'), function (req, res) {
 
     if (err)
     {
-      console.error(err);
+      logger.error(err);
       res.status(500).send('MySQL error');
       return;
     }
@@ -94,7 +96,7 @@ app.post('/', upload.single('screenshot'), auth.sanitize, auth.enforce('create')
 
     if (err)
     {
-      console.error(err);
+      logger.error(err);
       res.status(500).send('MySQL error');
 
       next('MySQL error'); // Delete screenshot
@@ -102,7 +104,7 @@ app.post('/', upload.single('screenshot'), auth.sanitize, auth.enforce('create')
     }
 
     // TODO
-    console.log('#'+ id +' created by '+ issue.reporter +'@'+ req.ip);
+    logger.log('#'+ id +' created by '+ issue.reporter +'@'+ req.ip);
     res.status(201).json({id: id});
   });
 
@@ -149,7 +151,7 @@ app.param('issueId', function(req, res, next, id) {
 
     if (err)
     {
-      console.error(err);
+      logger.error(err);
       res.status(500).send('MySQL error');
       return;
     }
@@ -197,7 +199,7 @@ app.put('/:issueId', auth.sanitize, auth.enforce('update'),
     }
 
     // TODO
-    console.log('#'+ req.issue.id +' updated by '+ 'TODO' +'@'+ req.ip);
+    logger.log('#'+ req.issue.id +' updated by '+ 'TODO' +'@'+ req.ip);
     res.status(204).send('Updated');
   });
 
@@ -210,7 +212,7 @@ app.delete('/:issueId', auth.sanitize, auth.enforce('delete'),
 
     if (err)
     {
-      console.error(err);
+      logger.error(err);
       res.status(500).send('MySQL error');
       return;
     }
@@ -221,7 +223,7 @@ app.delete('/:issueId', auth.sanitize, auth.enforce('delete'),
     }
 
     // TODO
-    console.log('#'+ req.issue.id +' deleted by '+ 'TODO' +'@'+ req.ip);
+    logger.log('#'+ req.issue.id +' deleted by '+ 'TODO' +'@'+ req.ip);
     res.status(204).send('Deleted');
   });
 
@@ -240,7 +242,7 @@ app.get('/:issueId/screenshot', auth.sanitize, auth.enforce('view'),
     __dirname + '/screenshots/' + req.issue.screenshot,
     null, function (err) {
       if (err) {
-        console.log(err);
+        logger.log(err);
         res.status(err.status).end();
       }
   });
