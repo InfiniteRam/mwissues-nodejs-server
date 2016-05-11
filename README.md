@@ -13,6 +13,7 @@ This project requires a [MySql](https://www.mysql.com/) server to run.
 
 * [Express](http://expressjs.com/)
 * [Node-MySql](https://github.com/felixge/node-mysql)
+* [Winston](https://github.com/winstonjs/winston)
 
 
 ## License
