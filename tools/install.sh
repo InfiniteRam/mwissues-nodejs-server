@@ -31,6 +31,9 @@ chmod +x index.js
 echo 'Downloading NPM packages...'
 npm update
 
+# Finished base installation
+echo "1.0" > VERSION
+
 # Setup the service
 chmod +x tools/mwissues-install-service.sh
 if [ `groups | grep -c sudo` = '0' ]; then
