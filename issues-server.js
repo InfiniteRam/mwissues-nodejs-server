@@ -104,7 +104,7 @@ app.post('/', upload.single('screenshot'), auth.sanitize, auth.enforce('create')
     }
 
     // TODO
-    logger.log('#'+ id +' created by '+ issue.reporter +'@'+ req.ip);
+    logger.info('#'+ id +' created by '+ issue.reporter +'@'+ req.ip);
     res.status(201).json({id: id});
   });
 
@@ -199,7 +199,7 @@ app.put('/:issueId', auth.sanitize, auth.enforce('update'),
     }
 
     // TODO
-    logger.log('#'+ req.issue.id +' updated by '+ 'TODO' +'@'+ req.ip);
+    logger.info('#'+ req.issue.id +' updated by '+ 'TODO' +'@'+ req.ip);
     res.status(204).send('Updated');
   });
 
@@ -223,7 +223,7 @@ app.delete('/:issueId', auth.sanitize, auth.enforce('delete'),
     }
 
     // TODO
-    logger.log('#'+ req.issue.id +' deleted by '+ 'TODO' +'@'+ req.ip);
+    logger.info('#'+ req.issue.id +' deleted by '+ 'TODO' +'@'+ req.ip);
     res.status(204).send('Deleted');
   });
 
@@ -242,7 +242,7 @@ app.get('/:issueId/screenshot', auth.sanitize, auth.enforce('view'),
     __dirname + '/screenshots/' + req.issue.screenshot,
     null, function (err) {
       if (err) {
-        logger.log(err);
+        logger.error(err);
         res.status(err.status).end();
       }
   });
