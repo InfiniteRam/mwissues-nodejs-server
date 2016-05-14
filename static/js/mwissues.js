@@ -354,8 +354,18 @@ $(document).ready(function() {
     $(this).toggleClass("filter-disabled");
     mwUpdateFilters();
   });
+  $("#issue-cat-cont > a").on("dblclick", function(event) {
+    $("#issue-cat-cont > a").addClass("filter-disabled");
+    $(this).removeClass("filter-disabled");
+    mwUpdateFilters();
+  });
   $("#issue-state-cont > a").on("click", function(event) {
     $(this).toggleClass("filter-disabled");
+    mwUpdateFilters();
+  });
+  $("#issue-state-cont > a").on("dblclick", function(event) {
+    $("#issue-state-cont > a").addClass("filter-disabled");
+    $(this).removeClass("filter-disabled");
     mwUpdateFilters();
   });
 
