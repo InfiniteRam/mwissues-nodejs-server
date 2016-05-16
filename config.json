@@ -14,7 +14,7 @@
   "auth": "apikey",
   "apikeys": {
     "anonymous": ["view"],
-    "aab3b498ecb8277e": ["view", "create", "update", "delete"],
+    "aab3b498ecb8277e": ["admin"],
     "b2d39d95c5659a9f": ["view", "create", "update"],
     "facc74b2418cf6c5": ["create"]
   }
