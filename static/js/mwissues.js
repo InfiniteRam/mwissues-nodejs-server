@@ -324,21 +324,21 @@ var mw = (function(){
     // Hooks
     $("#issue-cat-cont > a").on("click", function(event) {
       $(this).toggleClass("filter-disabled");
-      mwUpdateFilters();
+      mw.UpdateFilters();
     });
     $("#issue-cat-cont > a").on("dblclick", function(event) {
       $("#issue-cat-cont > a").addClass("filter-disabled");
       $(this).removeClass("filter-disabled");
-      mwUpdateFilters();
+      mw.UpdateFilters();
     });
     $("#issue-state-cont > a").on("click", function(event) {
       $(this).toggleClass("filter-disabled");
-      mwUpdateFilters();
+      mw.UpdateFilters();
     });
     $("#issue-state-cont > a").on("dblclick", function(event) {
       $("#issue-state-cont > a").addClass("filter-disabled");
       $(this).removeClass("filter-disabled");
-      mwUpdateFilters();
+      mw.UpdateFilters();
     });
 
     // Disable resolved by default
