@@ -137,6 +137,7 @@
 }
 
 #issue-cat-cont > a {
+  cursor: pointer;
   width: 20px;
   height: 20px;
   display: inline-block;
@@ -192,6 +193,7 @@
 }
 
 #issue-state-cont > a {
+  cursor: pointer;
   border: 1px solid gray;
 
   user-select: none;
