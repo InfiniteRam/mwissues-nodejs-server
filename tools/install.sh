@@ -23,7 +23,11 @@ EOF
 mv config.json config.json.old
 sed "s%\(\"password\"\)\s*:\s*\".*\"%\1 : \"${MWPASS}\"%" < config.json.old > config.json
 
+# Dump the password on a file outside of version control
+echo ${MWPASS} > MYSQLPWD
+
 # Permissions
+chmod 0 MYSQLPWD
 chmod 600 config.json
 chmod +x index.js
 
