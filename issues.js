@@ -10,6 +10,7 @@ var config = require('./config.json');
 module.exports = (function() {
 
   // Issue object has:
+    // id*
     // title
     // description*
     // scene
@@ -17,15 +18,10 @@ module.exports = (function() {
     // category
     // cameraPosition
     // cameraOrientation
-    // orthographicSize
+    // orthographicSize*
     // reporter
     // assignee*
     // screenshot*
-
-  // Input validation
-  var fieldsValidation = {
-
-  };
 
   return {
 
@@ -33,23 +29,47 @@ module.exports = (function() {
     // Return the processed data or null
     validateInput: function(data) {
 
-      var issue = {
-        id: data.id,
-        title: data.title,
-        description: data.description,
-        scene: data.scene,
-        state: data.state,
-        category: data.category,
-        position: data.position,
-        cameraPosition: data.cameraPosition,
-        cameraOrientation: data.cameraOrientation,
-        orthographicSize: data.orthographicSize,
-        reporter: data.reporter,
-        assignee: data.assignee,
-        screenshot: data.screenshot
-      };
+      var issue = {};
 
-      // TODO Check parameters
+      // Check parameters
+
+      if (Number.isFinite(parseInt(data.id)))
+        issue.id = parseInt(data.id);
+
+      if (typeof(data.title) === "string")
+        issue.title = data.title;
+
+      if (typeof(data.description) === "string")
+        issue.description = data.description;
+
+      if (typeof(data.scene) === "string")
+        issue.scene = data.scene;
+
+      if (typeof(data.reporter) === "string")
+        issue.reporter = data.reporter;
+
+      if (typeof(data.assignee) === "string")
+        issue.assignee = data.assignee;
+
+      // TODO Better check for these parameters
+
+      if (Number.isFinite(parseInt(data.state)))
+        issue.state = parseInt(data.state);
+
+      if (Number.isFinite(parseInt(data.category)))
+        issue.category = parseInt(data.category);
+
+      if (typeof(data.position) === "string")
+        issue.position = data.position;
+
+      if (typeof(data.cameraPosition) === "string")
+        issue.cameraPosition = data.cameraPosition;
+
+      if (typeof(data.cameraOrientation) === "string")
+        issue.cameraOrientation = data.cameraOrientation;
+
+      if (Number.isFinite(parseFloat(data.orthographicSize)))
+        issue.orthographicSize = parseFloat(data.orthographicSize);
 
       return issue;
     },
@@ -78,6 +98,21 @@ module.exports = (function() {
     // screenshot is a filename
     bindScreenshot: function(issue, screenshot) {
       issue.screenshot = screenshot;
+    },
+
+    // Check if the issue is complete
+    // A complete issue has no missing required field
+    isComplete: function(issue) {
+      if (typeof(issue.title) !== "undefined"
+        && typeof(issue.scene) !== "undefined"
+        && typeof(issue.state) !== "undefined"
+        && typeof(issue.category) !== "undefined"
+        && typeof(issue.cameraPosition) !== "undefined"
+        && typeof(issue.cameraOrientation) !== "undefined"
+        && typeof(issue.reporter) !== "undefined")
+        return true;
+
+      return false;
     }
 
   };

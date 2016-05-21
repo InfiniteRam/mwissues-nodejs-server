@@ -65,7 +65,7 @@ app.get('/', auth.sanitize, auth.enforce('view'), function (req, res) {
     if (err)
     {
       logger.error(err);
-      res.status(500).send('MySQL error');
+      res.status(500).send('Database error');
       return;
     }
 
@@ -81,7 +81,7 @@ app.post('/', upload.single('screenshot'), auth.sanitize, auth.enforce('create')
 
   var issue = issues.validateInput(req.body);
 
-  if (!issue)
+  if (!issue || !issues.isComplete(issue))
   {
     res.status(400).send('Malformed request');
 
@@ -97,9 +97,9 @@ app.post('/', upload.single('screenshot'), auth.sanitize, auth.enforce('create')
     if (err)
     {
       logger.error(err);
-      res.status(500).send('MySQL error');
+      res.status(500).send('Database error');
 
-      next('MySQL error'); // Delete screenshot
+      next('Database error'); // Delete screenshot
       return;
     }
 
@@ -152,7 +152,7 @@ app.param('issueId', function(req, res, next, id) {
     if (err)
     {
       logger.error(err);
-      res.status(500).send('MySQL error');
+      res.status(500).send('Database error');
       return;
     }
 
@@ -213,7 +213,7 @@ app.delete('/:issueId', auth.sanitize, auth.enforce('delete'),
     if (err)
     {
       logger.error(err);
-      res.status(500).send('MySQL error');
+      res.status(500).send('Database error');
       return;
     }
 
