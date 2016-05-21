@@ -96,6 +96,17 @@
   height: 0;
 }
 
+/* Refresh */
+
+.refresh-inline {
+  display: inline-block;
+  margin-left: 0.8em;
+}
+
+h2 {
+  display: inline-block;
+}
+
 /* State badges */
 
 .issue-badge {

@@ -110,6 +110,17 @@ var mw = (function(){
       });
   }
 
+  function doRefresh() {
+    $("#refresh-btn").toggle(false);
+    $("#refresh-wait").toggle(true);
+
+    ajaxRefreshIssues()
+      .always(function() {
+        $("#refresh-btn").toggle(true);
+        $("#refresh-wait").toggle(false);
+      });
+  }
+
 
   // Content creation
   function showError(message) {
@@ -386,6 +397,10 @@ var mw = (function(){
     UpdateFilters: function() {
       updateFilters();
       rebuildIssueList();
+    },
+
+    Refresh: function() {
+      doRefresh();
     }
   };
 
