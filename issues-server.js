@@ -114,6 +114,8 @@ app.post('/', upload.single('screenshot'), auth.sanitize, auth.enforce('create')
   if (typeof(req.file) !== 'undefined')
     fs.unlink(req.file.path, function(){});
 
+  next(err); // Default handler for log
+
 });
 
 
