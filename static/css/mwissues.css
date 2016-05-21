@@ -4,19 +4,18 @@
  * LICENSE file in the root directory of this repository.
  */
 
-.modal-overlay
-{
-  position: absolute;
-  z-index: 200;
+.modal-overlay {
+  position: fixed;
+  z-index: 2000;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   background-color: rgba(0,0,0,0.5);
+  text-align: center;
 }
 
-.modal-box
-{
+.modal-box {
   position: fixed;
   z-index: 201;
   width: 400px;
@@ -30,6 +29,12 @@
   border-radius: 5px;
   text-align: center;
   color: black;
+}
+
+.modal-ss {
+  max-width: 95vw;
+  max-height: 95vh;
+  margin-top: 2.5vh;
 }
 
 .mwissues-logo {
@@ -49,23 +54,18 @@
   background: #FDD;
 }
 
-#issue-list
-{
-}
+#issue-list {}
 
-#issue-list h4
-{
+#issue-list h4 {
   margin-top: 4px;
 }
 
-#issue-list p
-{
+#issue-list p {
   margin-bottom: 0;
   margin-top: 0.3em;
 }
 
-#issue-list img
-{
+#issue-list img {
   float: left;
   max-height: 128px;
   max-width: 256px;
@@ -73,14 +73,23 @@
   margin-right: 12px;
 }
 
-.issue-scene
-{
+.issue-screenshot {
+  cursor: pointer;
+  position: absolute;
+  right: 12px;
+  top: 8px;
+  width: 32px;
+  height: 32px;
+  background-image: url('../img/camera.png');
+  background-size: 32px;
+}
+
+.issue-scene {
   font-size: 0.8em;
   color: gray;
 }
 
-.issue-description
-{
+.issue-description {
   padding-left: 8px;
 }
 

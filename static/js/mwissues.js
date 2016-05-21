@@ -148,7 +148,9 @@ var mw = (function(){
     // Screenshot
     if (issue.hasScreenshot) {
       dom.append(
-        $("<img>").attr("src", "issue/"+issue.id+"/screenshot"));
+        $("<p>").addClass("issue-screenshot").on("click", function(event) {
+          mw.ShowScreenshot(issue.id);
+        }));
     }
 
     // Scene
@@ -360,6 +362,7 @@ var mw = (function(){
 
   // Hooks
   return {
+
     Connect: function() {
       bLoading.toggle(true);
       bAuth.toggle(false);
@@ -401,7 +404,18 @@ var mw = (function(){
 
     Refresh: function() {
       doRefresh();
+    },
+
+    ShowScreenshot: function(issueId) {
+      $("body").append(
+        $("<div>").addClass("modal-overlay")
+          .append($("<img>").attr("src", "issue/"+issueId+"/screenshot")
+            .addClass("modal-ss"))
+          .on("click", function(event) {
+            $(this).remove();
+          }));
     }
+
   };
 
 })();
