@@ -62,7 +62,7 @@
         <div class="col-md-6 col-md-push-3">
           <h1>Something went wrong</h1>
           <div id="issue-error-text">Error text</div>
-          <a href="#" onclick="javascript:mwCloseError(); return false">Close</a>
+          <a href="#" onclick="javascript:mw.CloseError(); return false">Close</a>
         </div>
       </div>
     </div>
@@ -79,9 +79,9 @@
           <div class="auth-field"><b>API Key</b><input id="issue-key" type="password"></div>
           <div><input id="issue-remember" type="checkbox"> Remember my credentials</div>
           <br>
-          <a class="btn btn-default btn-block" onclick="javascript:mwConnect()">Login</a>
+          <a class="btn btn-default btn-block" onclick="javascript:mw.Connect()">Login</a>
           <hr>
-          <a class="btn btn-default btn-block" onclick="javascript:mwConnectAnon()">Anonymous login</a>
+          <a class="btn btn-default btn-block" onclick="javascript:mw.ConnectAnon()">Anonymous login</a>
         </div>
       </div>
     </div>
@@ -107,15 +107,15 @@
           </div>
           <div>
             Scene :
-            <select id="scene-filter" onchange="javascript:mwUpdateFilters()"></select>
+            <select id="scene-filter" onchange="javascript:mw.UpdateFilters()"></select>
           </div>
           <div>
             Reporter :
-            <select id="reporter-filter" onchange="javascript:mwUpdateFilters()"></select>
+            <select id="reporter-filter" onchange="javascript:mw.UpdateFilters()"></select>
           </div>
           <div>
             Assignee :
-            <select id="assignee-filter" onchange="javascript:mwUpdateFilters()"></select>
+            <select id="assignee-filter" onchange="javascript:mw.UpdateFilters()"></select>
           </div>
         </div>
         <div class="col-md-9 col-md-pull-3">
