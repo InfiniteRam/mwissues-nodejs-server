@@ -51,13 +51,23 @@ module.exports = (function() {
     updateIssue: function(issue, callback) {
 
       // Update set is limited to editable values
-      var set = {
-        title: issue.title,
-        description: issue.description,
-        state: issue.state,
-        category: issue.category,
-        assignee: issue.assignee
-      };
+      var set = {};
+
+      if (typeof(issue.title) !== "undefined")
+        set.title = issue.title;
+
+      if (typeof(issue.description) !== "undefined")
+        set.description = issue.description;
+
+      if (typeof(issue.state) !== "undefined")
+        set.state = issue.state;
+
+      if (typeof(issue.category) !== "undefined")
+        set.category = issue.category;
+
+      if (typeof(issue.assignee) !== "undefined")
+        set.assignee = issue.assignee;
+
 
       pool.query('UPDATE issues SET ? WHERE ?', [set, {id: issue.id}], function(err, result) {
         if (err) {
