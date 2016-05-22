@@ -10,6 +10,9 @@ var mysql = require('mysql');
 
 var pool  = mysql.createPool(config.mysqlParams);
 
+// TODO Only used to delete screenshots on clean, should be removed
+var fs = require('fs');
+
 
 module.exports = (function() {
 
@@ -83,7 +86,7 @@ module.exports = (function() {
     // Delete an issue
     deleteIssue: function(id, callback) {
 
-      pool.query('DELETE FROM issues WHERE ?', {id: id}, function(err, result) {
+      pool.query('UPDATE issues SET archived = TRUE WHERE ?', {id: id}, function(err, result) {
         if (err) {
           callback(err);
           return;
@@ -124,13 +127,63 @@ module.exports = (function() {
           start = filter.start;
       }*/
 
-      pool.query('SELECT * FROM issues ORDER BY id ASC', function(err, result) {
+      pool.query('SELECT * FROM issues WHERE archived = FALSE ORDER BY id ASC', function(err, result) {
         if (err) {
           callback(err);
           return;
         }
 
         callback(null, result);
+      });
+
+    },
+
+    // Delete old issues
+    // On MySql we archive them instead
+    // TODO We shouldn't delete screenshots here
+    deleteOldIssues: function(days, callback) {
+
+      pool.query('SELECT * FROM issues WHERE archived = FALSE AND state = 0x08 AND time < DATE_SUB(NOW(), INTERVAL ? DAY)',
+          days, function(err, result) {
+        if (err) {
+          callback(err);
+          return;
+        }
+
+        var i = 0;
+
+        // Loop on all issues asynchronously
+        function nextStep() {
+          // End condition
+          if (i >= result.length) {
+            callback(null, i);
+            return;
+          }
+
+          // Get next issue
+          var issue = result[i++];
+
+          if (typeof(issue.screenshot) !== 'undefined')
+          {
+            fs.unlink(__dirname + '/screenshots/' + issue.screenshot, function(){});
+          }
+
+          // Archive it and mark the screenshot as deleted
+          pool.query('UPDATE issues SET archived = TRUE, screenshot = NULL WHERE ?',
+              {id: issue.id}, function(err, result) {
+            if (err) {
+              callback(err);
+              return;
+            }
+
+            // Next iteration
+            nextStep();
+          });
+
+        }
+        // First iteration
+        nextStep();
+
       });
 
     }

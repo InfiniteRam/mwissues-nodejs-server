@@ -260,7 +260,18 @@ function maintenance() {
   // Call the maintenance function every 12 hours
   setTimeout(maintenance, 12 * 60 * 60 * 1000);
   
-  // TODO clear old resolved issues
+  // Clear old resolved issues
+  if (parseInt(config.deleteResolvedIssuesAfterDays) > 0) {
+    issuesdb.deleteOldIssues(parseInt(config.deleteResolvedIssuesAfterDays),
+      function(err, count) {
+        if (err)
+        {
+          logger.error(err);
+          return;
+        }
+        logger.info('Deleted ' + count + ' issue(s) during maintenance');
+      });
+  }
 
 }
 
