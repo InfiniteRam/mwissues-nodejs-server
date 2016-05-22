@@ -160,7 +160,9 @@ var mw = (function(){
     // Description
     if (issue.description) {
       dom.append($("<p>").addClass("issue-description")
-        .text(issue.description));
+        .html(
+          $("<div>").text(issue.description).html().replace(/\n/g, "<br>")
+        ));
     }
 
     // Reporter
