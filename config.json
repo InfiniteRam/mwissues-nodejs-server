@@ -1,6 +1,6 @@
 {
   "port": 3000,
-  "maxScreenshotSize": "5mb",
+  "maxScreenshotSize": 5242880,
 
   "deleteResolvedIssuesAfterDays": 15,
 

@@ -43,7 +43,7 @@ function fileFilter (req, file, cb) {
     cb(null, false); // Reject
   }
 }
-var limits = { fileSize: config.maxScreenshotSize }
+var limits = { fileSize: config.maxScreenshotSize };
 var upload = multer({ storage: storage, fileFilter: fileFilter, limits: limits });
 
 // Database
@@ -109,6 +109,10 @@ app.post('/', upload.single('screenshot'), auth.sanitize, auth.enforce('create')
   });
 
 }, function(err, req, res, next) {
+
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    res.status(413).send('Screenshot size limit exceeded');
+  }
 
   // Error handler that delete the screenshot
   if (typeof(req.file) !== 'undefined')
