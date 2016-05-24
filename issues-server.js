@@ -112,6 +112,7 @@ app.post('/', upload.single('screenshot'), auth.sanitize, auth.enforce('create')
 
   if (err.code === 'LIMIT_FILE_SIZE') {
     res.status(413).send('Screenshot size limit exceeded');
+    return; // Do not use default handler
   }
 
   // Error handler that delete the screenshot
