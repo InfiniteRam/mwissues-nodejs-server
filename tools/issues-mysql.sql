@@ -11,17 +11,17 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `issues` (
   `id` int(10) UNSIGNED NOT NULL,
-  `title` varchar(128) NOT NULL,
+  `title` varchar(256) NOT NULL,
   `description` text,
   `scene` varchar(256) NOT NULL,
   `state` int(11) NOT NULL,
   `category` int(11) NOT NULL,
-  `position` varchar(48) NOT NULL,
-  `cameraPosition` varchar(48) NOT NULL,
-  `cameraOrientation` varchar(48) NOT NULL,
+  `position` varchar(64) NOT NULL,
+  `cameraPosition` varchar(64) NOT NULL,
+  `cameraOrientation` varchar(64) NOT NULL,
   `orthographicSize` float DEFAULT NULL,
-  `reporter` varchar(64) NOT NULL,
-  `assignee` varchar(64) DEFAULT NULL,
+  `reporter` varchar(128) NOT NULL,
+  `assignee` varchar(128) DEFAULT NULL,
   `screenshot` varchar(64) DEFAULT NULL,
   `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `archived` boolean NOT NULL DEFAULT FALSE
