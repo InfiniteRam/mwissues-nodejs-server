@@ -4,6 +4,18 @@
  * LICENSE file in the root directory of this repository.
  */
 
+
+// This function allows you to handle custom data
+// For example, you can add text or other visual elements to the issue
+// * dom is a jQuery dom element representing the issue
+//   It's a <li> already filled with the usual "issue" data
+// * data is your custom data as a string
+var customDataHandler = function(dom, data) {
+  // Add code to handle your custom data here
+}
+
+
+// MwIssues web interface code
 var mw = (function(){
 
   // Enums from C#
@@ -173,6 +185,11 @@ var mw = (function(){
     if (issue.assignee) {
       dom.append($("<p>").addClass("issue-assignee")
         .text(issue.assignee).prepend($("<i>").text("Assignee: ")));
+    }
+
+    // Custom data
+    if (issue.customData && customDataHandler) {
+      customDataHandler(dom, issue.customData);
     }
 
     // Add invisible clear at the end to prevent overflow
@@ -362,7 +379,7 @@ var mw = (function(){
   })
 
 
-  // Hooks
+  // Exported functions
   return {
 
     Connect: function() {
