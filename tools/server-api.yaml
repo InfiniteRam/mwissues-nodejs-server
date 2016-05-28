@@ -97,6 +97,10 @@ paths:
           description: Screenshot for the issue
           required: false
           type: file
+        - name: customData
+          in: formData
+          description: Custom data
+          type: string
       produces:
         - application/json
       responses:
@@ -158,6 +162,10 @@ paths:
         - name: assignee
           in: formData
           description: User assigned to the issue
+          type: string
+        - name: customData
+          in: formData
+          description: Custom data
           type: string
       responses:
         204:
@@ -289,6 +297,9 @@ definitions:
         description: User assigned to the issue
       hasScreenshot:
         type: boolean
+      customData:
+        type: string
+        description: Custom data
 
 securityDefinitions:
   apiKey:
