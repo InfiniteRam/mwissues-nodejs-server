@@ -22,6 +22,7 @@ module.exports = (function() {
     // reporter
     // assignee*
     // screenshot*
+    // customData*
 
   return {
 
@@ -50,6 +51,9 @@ module.exports = (function() {
 
       if (typeof(data.assignee) === "string")
         issue.assignee = data.assignee;
+
+      if (typeof(data.customData) === "string")
+        issue.customData = data.customData;
 
       // TODO Better check for these parameters
 
@@ -90,7 +94,8 @@ module.exports = (function() {
         orthographicSize: issue.orthographicSize,
         reporter: issue.reporter,
         assignee: issue.assignee,
-        hasScreenshot: !!issue.screenshot
+        hasScreenshot: !!issue.screenshot,
+        customData: issue.customData
       };
     },
 

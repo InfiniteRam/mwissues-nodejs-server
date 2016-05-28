@@ -12,7 +12,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `issues` (
   `id` int(10) UNSIGNED NOT NULL,
   `title` varchar(256) NOT NULL,
-  `description` text,
+  `description` text DEFAULT NULL,
   `scene` varchar(256) NOT NULL,
   `state` int(11) NOT NULL,
   `category` int(11) NOT NULL,
@@ -23,6 +23,7 @@ CREATE TABLE `issues` (
   `reporter` varchar(128) NOT NULL,
   `assignee` varchar(128) DEFAULT NULL,
   `screenshot` varchar(64) DEFAULT NULL,
+  `customData` text DEFAULT NULL,
   `time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `archived` boolean NOT NULL DEFAULT FALSE
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

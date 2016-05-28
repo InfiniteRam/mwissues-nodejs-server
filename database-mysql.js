@@ -35,7 +35,8 @@ module.exports = (function() {
         orthographicSize: issue.orthographicSize,
         reporter: issue.reporter,
         assignee: issue.assignee,
-        screenshot: issue.screenshot
+        screenshot: issue.screenshot,
+        customData: issue.customData
       };
 
       pool.query('INSERT INTO issues SET ?', set, function(err, result) {
@@ -70,6 +71,9 @@ module.exports = (function() {
 
       if (typeof(issue.assignee) !== "undefined")
         set.assignee = issue.assignee;
+
+      if (typeof(issue.customData) !== "undefined")
+        set.customData = issue.customData;
 
 
       pool.query('UPDATE issues SET ? WHERE ?', [set, {id: issue.id}], function(err, result) {
