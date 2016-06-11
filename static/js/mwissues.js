@@ -297,9 +297,15 @@ var mw = (function(){
     var list = $("#issue-list");
     list.html("");
 
-    issueListFiltered.forEach(function(issue) {
-      list.append(createDomForIssue(issue));
-    });
+    if (issueListFiltered.length > 0) {
+      issueListFiltered.forEach(function(issue) {
+        list.append(createDomForIssue(issue));
+      });
+    }
+    else {
+      list.append($("<p>").text("No issues found"));
+    }
+
   }
 
 
