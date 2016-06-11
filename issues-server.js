@@ -11,6 +11,7 @@ var issues = require('./issues');
 var logger = require('./logger');
 
 var fs = require('fs');
+var crypto = require('crypto');
 
 var express = require('express');
 var app = express();
@@ -32,9 +33,23 @@ var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, __dirname + '/screenshots');
   },
+  filename: function (req, file, cb) {
+    console.log(file.mimetype);
+
+    crypto.pseudoRandomBytes(16, function (err, raw) {
+      if (file.mimetype === 'image/png') {
+        cb(err, err ? undefined : raw.toString('hex') + '.png');
+      }
+      else {
+        cb(err, err ? undefined : raw.toString('hex') + '.jpg');
+      }
+    });
+  }
 })
 function fileFilter (req, file, cb) {
-  if (file.mimetype === 'image/png')
+  if (file.mimetype === 'image/png'
+    || file.mimetype === 'image/jpg'
+    || file.mimetype === 'image/jpeg')
   {
     cb(null, true); // Accept
   }
@@ -245,7 +260,16 @@ app.get('/:issueId/screenshot', auth.sanitize, auth.enforce('view'),
     res.sendStatus(404);
     return;
   }
-  res.type('image/png').sendFile(
+
+  var ext = req.issue.screenshot.substring(req.issue.screenshot.length - 4);
+  if (ext === '.jpg') {
+    res.type('image/jpg');
+  }
+  else {
+    res.type('image/png');
+  }
+
+  res.sendFile(
     __dirname + '/screenshots/' + req.issue.screenshot,
     null, function (err) {
       if (err) {
