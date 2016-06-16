@@ -4,7 +4,7 @@
  * LICENSE file in the root directory of this repository.
  */
 
-var config = require('./config.json');
+var config = require('../config.json');
 
 var apikeys = config.apikeys;
 

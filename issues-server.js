@@ -62,10 +62,10 @@ var limits = { fileSize: config.maxScreenshotSize };
 var upload = multer({ storage: storage, fileFilter: fileFilter, limits: limits });
 
 // Database
-var issuesdb = require('./database-'+ config.database);
+var issuesdb = require('./database/'+ config.database);
 
 // Authentication
-var auth = require('./auth-'+ config.auth);
+var auth = require('./auth/'+ config.auth);
 
 
 // #################################
@@ -237,11 +237,6 @@ app.delete('/:issueId', auth.sanitize, auth.enforce('delete'),
       logger.error(err);
       res.status(500).send('Database error');
       return;
-    }
-
-    if (typeof(req.issue.screenshot) !== 'undefined')
-    {
-      fs.unlink(__dirname + '/screenshots/' + req.issue.screenshot, function(){});
     }
 
     // TODO

@@ -6,6 +6,8 @@
 
 var config = require('./config.json');
 
+var fs = require('fs');
+
 
 module.exports = (function() {
 
@@ -103,6 +105,14 @@ module.exports = (function() {
     // screenshot is a filename
     bindScreenshot: function(issue, screenshot) {
       issue.screenshot = screenshot;
+    },
+
+    // Delete screenshot bound to an issue
+    deleteScreenshot: function(issue) {
+      if (typeof(issue.screenshot) !== 'undefined') {
+        fs.unlink(__dirname + '/screenshots/' + issue.screenshot, function(){});
+        delete issue.screenshot;
+      }
     },
 
     // Check if the issue is complete

@@ -4,14 +4,14 @@
  * LICENSE file in the root directory of this repository.
  */
 
-var config = require('./config.json');
+var config = require('../config.json');
 
 var mysql = require('mysql');
 
 var pool  = mysql.createPool(config.mysqlParams);
 
-// TODO Only used to delete screenshots on clean, should be removed
-var fs = require('fs');
+
+var issues = require('../issues');
 
 
 module.exports = (function() {
@@ -90,7 +90,9 @@ module.exports = (function() {
     // Delete an issue
     deleteIssue: function(id, callback) {
 
-      pool.query('UPDATE issues SET archived = TRUE WHERE ?', {id: id}, function(err, result) {
+      issues.deleteScreenshot(issue);
+
+      pool.query('UPDATE issues SET archived = TRUE, screenshot = NULL WHERE ?', {id: id}, function(err, result) {
         if (err) {
           callback(err);
           return;
@@ -167,10 +169,7 @@ module.exports = (function() {
           // Get next issue
           var issue = result[i++];
 
-          if (typeof(issue.screenshot) !== 'undefined')
-          {
-            fs.unlink(__dirname + '/screenshots/' + issue.screenshot, function(){});
-          }
+          issues.deleteScreenshot(issue);
 
           // Archive it and mark the screenshot as deleted
           pool.query('UPDATE issues SET archived = TRUE, screenshot = NULL WHERE ?',
