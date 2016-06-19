@@ -4,10 +4,18 @@
 if [ ! -e tools/issues-mysql.sql ]; then
   echo 'Make sure you are in the right directory (mwissues-nodejs-server) and try again'
   return 1
-fi;
+fi
+
+if [ -e VERSION ]; then
+  echo "MwIssues is already installed (version $(cat VERSION))"
+  return 1
+fi
+
+# Stop on error
+set -e
 
 # Generate MwIssues MySql password
-MWPASS=`tr -cd '[:alnum:]' < /dev/urandom | head -c30`
+MWPASS=$(tr -cd '[:alnum:]' < /dev/urandom | head -c30)
 
 # Prepare the database
 echo 'Please enter your MySql password...'
@@ -20,7 +28,7 @@ mysql --user=root --password << EOF
 EOF
 
 # Update config.json with the MySql password
-mv config.json config.json.old
+mv -i config.json config.json.old
 sed "s%\(\"password\"\)\s*:\s*\".*\"%\1 : \"${MWPASS}\"%" < config.json.old > config.json
 
 # Dump the password on a file outside of version control
@@ -40,7 +48,7 @@ echo "1.0" > VERSION
 
 # Setup the service
 chmod +x tools/mwissues-install-service.sh
-if [ `groups | grep -c sudo` = '0' ]; then
+if [ $(groups | grep -c sudo) -eq 0 ]; then
   echo 'Please run tools/mwissues-install-service.sh with root access'
   echo 'You can also do "nodejs index.js" to start the server manually'
 else

@@ -1,10 +1,18 @@
 #!/bin/sh
 # Author: Bastien Brunnenstein
 
+if [ $(id -u) -ne 0 ]; then
+  echo 'You '
+  return 1
+fi
+
 if [ ! -e tools/issues-mysql.sql ]; then
   echo 'Make sure you are in the right directory (mwissues-nodejs-server) and try again'
   return 1
-fi;
+fi
+
+# Stop on error
+set -e
 
 # This script must be run as root
 # Parameter 1 is username
