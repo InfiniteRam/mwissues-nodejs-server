@@ -58,7 +58,7 @@ function fileFilter (req, file, cb) {
     cb(null, false); // Reject
   }
 }
-var limits = { fileSize: config.maxScreenshotSize };
+var limits = { fileSize: config.mwissues.maxScreenshotSize };
 var upload = multer({ storage: storage, fileFilter: fileFilter, limits: limits });
 
 // Database
@@ -285,8 +285,8 @@ function maintenance() {
   setTimeout(maintenance, 12 * 60 * 60 * 1000);
   
   // Clear old resolved issues
-  if (parseInt(config.deleteResolvedIssuesAfterDays) > 0) {
-    issuesdb.deleteOldIssues(parseInt(config.deleteResolvedIssuesAfterDays),
+  if (parseInt(config.mwissues.deleteResolvedIssuesAfterDays) > 0) {
+    issuesdb.deleteOldIssues(parseInt(config.mwissues.deleteResolvedIssuesAfterDays),
       function(err, count) {
         if (err)
         {

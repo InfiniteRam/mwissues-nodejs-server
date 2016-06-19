@@ -20,5 +20,5 @@ app.use(express.static('static'));
 app.use('/issue', issues);
 
 app.listen(config.port, function () {
-  logger.info('MwIssues server listening on port '+ config.port +'!');
+  logger.info('MwIssues server listening on port '+ config.mwissues.port +'!');
 });
