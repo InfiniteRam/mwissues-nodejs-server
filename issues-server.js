@@ -4,7 +4,7 @@
  * LICENSE file in the root directory of this repository.
  */
 
-var config = require('./config.json');
+var config = require('./config.json').mwissues;
 
 var issues = require('./issues');
 
@@ -58,14 +58,14 @@ function fileFilter (req, file, cb) {
     cb(null, false); // Reject
   }
 }
-var limits = { fileSize: config.mwissues.maxScreenshotSize };
+var limits = { fileSize: config.maxScreenshotSize };
 var upload = multer({ storage: storage, fileFilter: fileFilter, limits: limits });
 
 // Database
-var issuesdb = require('./database/'+ config.database);
+var issuesdb = require('./database');
 
 // Authentication
-var auth = require('./auth/'+ config.auth);
+var auth = require('./auth');
 
 
 // #################################
@@ -285,8 +285,8 @@ function maintenance() {
   setTimeout(maintenance, 12 * 60 * 60 * 1000);
   
   // Clear old resolved issues
-  if (parseInt(config.mwissues.deleteResolvedIssuesAfterDays) > 0) {
-    issuesdb.deleteOldIssues(parseInt(config.mwissues.deleteResolvedIssuesAfterDays),
+  if (parseInt(config.deleteResolvedIssuesAfterDays) > 0) {
+    issuesdb.deleteOldIssues(parseInt(config.deleteResolvedIssuesAfterDays),
       function(err, count) {
         if (err)
         {
