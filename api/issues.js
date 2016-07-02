@@ -4,11 +4,14 @@
  * LICENSE file in the root directory of this repository.
  */
 
-var config = require('./config.json').mwissues;
+var config = require('../config.json').mwissues;
 
-var issues = require('./issues');
+var logger = require('../logger');
 
-var logger = require('./logger');
+var issues = require('../issues');
+var issuesdb = require('../database');
+var auth = require('../auth');
+
 
 var fs = require('fs');
 var crypto = require('crypto');
@@ -60,12 +63,6 @@ function fileFilter (req, file, cb) {
 }
 var limits = { fileSize: config.maxScreenshotSize };
 var upload = multer({ storage: storage, fileFilter: fileFilter, limits: limits });
-
-// Database
-var issuesdb = require('./database');
-
-// Authentication
-var auth = require('./auth');
 
 
 // #################################
@@ -140,21 +137,6 @@ app.post('/', upload.single('screenshot'), auth.sanitize, auth.enforce('create')
 
 
 // #################################
-//            SPECIAL
-// #################################
-// This group has to be before the individual issues
-// or the parameterized URL will catch everything
-
-// Authentication, return
-// { valid: bool, permissions: [''] }
-app.get('/auth', auth.sanitize, function (req, res) {
-  auth.getAuth(req, function(authData) {
-    res.json(authData);
-  });
-});
-
-
-// #################################
 //         INDIVIDUAL ISSUES
 // #################################
 
@@ -216,8 +198,9 @@ app.put('/:issueId', auth.sanitize, auth.enforce('update'),
 
     if (err)
     {
-      res.sendStatus(400);
-      throw err;
+      logger.error(err);
+      res.status(500).send('Database error');
+      return;
     }
 
     // TODO
@@ -278,6 +261,7 @@ app.get('/:issueId/screenshot', auth.sanitize, auth.enforce('view'),
 // #################################
 //          MAINTENANCE
 // #################################
+// TODO Move?
 
 function maintenance() {
 

@@ -313,7 +313,7 @@ var mw = (function(){
   function ajaxAuth() {
     return $.ajax({
       method: "GET",
-      url: "issue/auth",
+      url: "auth",
       dataType: "json",
       data: { user: aUsername, key: aApiKey }
     })

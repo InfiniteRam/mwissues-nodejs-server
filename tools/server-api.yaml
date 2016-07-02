@@ -219,7 +219,7 @@ paths:
         404:
           description: Issue or screenshot not found
 
-  /issue/auth:
+  /auth:
     get:
       summary: Check authentication credentials
       security:
