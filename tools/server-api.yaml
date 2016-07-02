@@ -246,6 +246,19 @@ paths:
         400:
           description: Invalid parameter
 
+  /admin/renameScene:
+    post:
+      summary: Rename a scene globally
+      security:
+        - apiKey: []
+      responses:
+        204:
+          description: Query executed successfully
+        400:
+          description: Invalid parameter
+        403:
+          description: Permission denied
+
 
 definitions:
   Issue:

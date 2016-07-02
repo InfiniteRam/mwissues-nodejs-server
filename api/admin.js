@@ -22,6 +22,25 @@ app.use(auth.sanitize, auth.enforce('admin'));
 
 // Rename a scene
 app.post('/renameScene', function (req, res) {
-  // TODO
-  res.sendStatus(501);
+
+  var oldScene = req.body.oldScene;
+  var newScene = req.body.newScene;
+
+  if (typeof(oldScene) !== "string"
+    || typeof(newScene) !== "string")
+  {
+    res.sendStatus(400);
+    return;
+  }
+
+  issuesdb.renameScene(oldScene, newScene, function(err) {
+    if (err) {
+      logger.error(err);
+      res.sendStatus(500);
+      return;
+    }
+
+    res.sendStatus(204);
+  });
+
 });

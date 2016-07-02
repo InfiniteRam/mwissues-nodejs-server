@@ -146,7 +146,6 @@ module.exports = (function() {
 
     // Delete old issues
     // On MySql we archive them instead
-    // TODO We shouldn't delete screenshots here
     deleteOldIssues: function(days, callback) {
 
       pool.query('SELECT * FROM issues WHERE archived = FALSE AND state = 0x08 AND time < DATE_SUB(NOW(), INTERVAL ? DAY)',
@@ -187,6 +186,21 @@ module.exports = (function() {
         // First iteration
         nextStep();
 
+      });
+
+    },
+
+    // Rename a scene globally
+    renameScene: function(oldName, newName, callback) {
+
+      pool.query('UPDATE issues SET scene = ? WHERE ?',
+          newName, {scene: oldName}, function(err, result) {
+        if (err) {
+          callback(err);
+          return;
+        }
+
+        callback(null);
       });
 
     }
