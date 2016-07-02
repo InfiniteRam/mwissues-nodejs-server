@@ -39,12 +39,12 @@ chmod 0 MYSQLPWD
 chmod 600 config.json
 chmod +x index.js
 
+# Finished base installation
+echo 1.0 > VERSION
+
 # Download the packages for NodeJs
 echo 'Downloading NPM packages...'
 npm update
-
-# Finished base installation
-echo "1.0" > VERSION
 
 # Setup the service
 chmod +x tools/mwissues-install-service.sh

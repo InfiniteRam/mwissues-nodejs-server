@@ -84,10 +84,10 @@ module.exports = {
       }
       else {
         // Send an error
-        res.status(403).send('Premission denied');
+        res.status(403).send('Permission denied');
 
         // Continue in error (important for cleanup)
-        next('Premission denied');
+        next('Permission denied');
       }
     }
   }
