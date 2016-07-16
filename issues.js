@@ -39,22 +39,22 @@ module.exports = (function() {
       if (Number.isFinite(parseInt(data.id)))
         issue.id = parseInt(data.id);
 
-      if (typeof(data.title) === "string")
+      if (typeof(data.title) === 'string')
         issue.title = data.title;
 
-      if (typeof(data.description) === "string")
+      if (typeof(data.description) === 'string')
         issue.description = data.description;
 
-      if (typeof(data.scene) === "string")
+      if (typeof(data.scene) === 'string')
         issue.scene = data.scene;
 
-      if (typeof(data.reporter) === "string")
+      if (typeof(data.reporter) === 'string')
         issue.reporter = data.reporter;
 
-      if (typeof(data.assignee) === "string")
+      if (typeof(data.assignee) === 'string')
         issue.assignee = data.assignee;
 
-      if (typeof(data.customData) === "string")
+      if (typeof(data.customData) === 'string')
         issue.customData = data.customData;
 
       // TODO Better check for these parameters
@@ -65,13 +65,13 @@ module.exports = (function() {
       if (Number.isFinite(parseInt(data.category)))
         issue.category = parseInt(data.category);
 
-      if (typeof(data.position) === "string")
+      if (typeof(data.position) === 'string')
         issue.position = data.position;
 
-      if (typeof(data.cameraPosition) === "string")
+      if (typeof(data.cameraPosition) === 'string')
         issue.cameraPosition = data.cameraPosition;
 
-      if (typeof(data.cameraOrientation) === "string")
+      if (typeof(data.cameraOrientation) === 'string')
         issue.cameraOrientation = data.cameraOrientation;
 
       if (Number.isFinite(parseFloat(data.orthographicSize)))
@@ -118,13 +118,13 @@ module.exports = (function() {
     // Check if the issue is complete
     // A complete issue has no missing required field
     isComplete: function(issue) {
-      if (typeof(issue.title) !== "undefined"
-        && typeof(issue.scene) !== "undefined"
-        && typeof(issue.state) !== "undefined"
-        && typeof(issue.category) !== "undefined"
-        && typeof(issue.cameraPosition) !== "undefined"
-        && typeof(issue.cameraOrientation) !== "undefined"
-        && typeof(issue.reporter) !== "undefined")
+      if (typeof(issue.title) !== 'undefined'
+        && typeof(issue.scene) !== 'undefined'
+        && typeof(issue.state) !== 'undefined'
+        && typeof(issue.category) !== 'undefined'
+        && typeof(issue.cameraPosition) !== 'undefined'
+        && typeof(issue.cameraOrientation) !== 'undefined'
+        && typeof(issue.reporter) !== 'undefined')
         return true;
 
       return false;

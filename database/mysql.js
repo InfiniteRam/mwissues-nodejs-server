@@ -57,22 +57,22 @@ module.exports = (function() {
       // Update set is limited to editable values
       var set = {};
 
-      if (typeof(issue.title) !== "undefined")
+      if (typeof(issue.title) !== 'undefined')
         set.title = issue.title;
 
-      if (typeof(issue.description) !== "undefined")
+      if (typeof(issue.description) !== 'undefined')
         set.description = issue.description;
 
-      if (typeof(issue.state) !== "undefined")
+      if (typeof(issue.state) !== 'undefined')
         set.state = issue.state;
 
-      if (typeof(issue.category) !== "undefined")
+      if (typeof(issue.category) !== 'undefined')
         set.category = issue.category;
 
-      if (typeof(issue.assignee) !== "undefined")
+      if (typeof(issue.assignee) !== 'undefined')
         set.assignee = issue.assignee;
 
-      if (typeof(issue.customData) !== "undefined")
+      if (typeof(issue.customData) !== 'undefined')
         set.customData = issue.customData;
 
 
@@ -124,12 +124,12 @@ module.exports = (function() {
     // callback is (err, issueArray)
     listIssues: function(filter, callback) {
 
-      /*if (typeof(filter.count) == "number" && Number.isInteger(filter.count))
+      /*if (typeof(filter.count) == 'number' && Number.isInteger(filter.count))
       {
         var start = 1;
         var count = filter.count;
 
-        if (typeof(filter.start) == "number" && Number.isInteger(filter.start))
+        if (typeof(filter.start) == 'number' && Number.isInteger(filter.start))
           start = filter.start;
       }*/
 
