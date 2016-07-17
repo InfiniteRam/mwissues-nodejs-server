@@ -27,5 +27,5 @@ app.use('/admin', admin);
 
 
 app.listen(config.port, function () {
-  logger.info('MwIssues server listening on port '+ config.mwissues.port +'!');
+  logger.info('MwIssues server listening on port '+ config.port +'!');
 });
