@@ -16,6 +16,11 @@ var app = express();
 module.exports = app;
 
 
+var bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+
+
 // Everything here requires admin access
 app.use(auth.sanitize, auth.enforce('admin'));
 
@@ -33,14 +38,14 @@ app.post('/renameScene', function (req, res) {
     return;
   }
 
-  issuesdb.renameScene(oldScene, newScene, function(err) {
+  issuesdb.renameScene(oldScene, newScene, function(affectedIssues, err) {
     if (err) {
       logger.error(err);
       res.sendStatus(500);
       return;
     }
 
-    res.sendStatus(204);
+    res.json({affectedIssues: affectedIssues});
   });
 
 });

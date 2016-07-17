@@ -57,6 +57,7 @@ var mw = (function(){
   var bError = $("#b-error");
   var bAuth = $("#b-auth");
   var bIssues = $("#b-issues");
+  var bAdmin = $("#b-admin");
 
 
   // Auth
@@ -112,6 +113,8 @@ var mw = (function(){
           })
           .done(function() {
             bIssues.toggle(true);
+            showTabs();
+            setActiveTab("issues");
           })
           .fail(function() {
             bAuth.toggle(true);
@@ -343,6 +346,51 @@ var mw = (function(){
       });
   }
 
+  function ajaxRenameScene(oldScene, newScene) {
+    return $.ajax({
+      method: "POST",
+      url: "admin/renameScene",
+      dataType: "json",
+      data: { oldScene: oldScene, newScene: newScene }
+    })
+      .fail(function( xhr ) {
+        showError("Request failed : "+ xhr.statusText);
+        console.error(xhr);
+      });
+  }
+
+
+  function hideAllBlocks() {
+    bIssues.toggle(false);
+    bAdmin.toggle(false);
+  }
+
+  function showTabs() {
+    $("#nav-tabs > li[id]").toggle(true);
+
+    if (aPermissions.indexOf("admin") === -1) {
+      $("#tab-admin").toggle(false);
+    }
+  }
+
+  function hideTabs() {
+    $("#nav-tabs > li[id]").toggle(false);
+  }
+
+  function lockTabs(locked) {
+    if (locked) {
+      $("#nav-tabs > li[id]").addClass("disabled");
+    }
+    else {
+      $("#nav-tabs > li[id]").removeClass("disabled");
+    }
+  }
+
+  function setActiveTab(tab) {
+    $("#nav-tabs > li").removeClass("active");
+    $("#tab-" + tab).addClass("active");
+  }
+
 
   $(document).ready(function() {
     bLoading.toggle(false);
@@ -376,13 +424,16 @@ var mw = (function(){
     if (key) {
       $("#issue-key").val(key);
 
-      $("#issue-remember").prop('checked', true);
+      $("#issue-remember").prop("checked", true);
 
       var user = localStorage.getItem("user");
       if (user) { $("#issue-user").val(user); }
     }
 
-  })
+  });
+
+  // TODO
+  var isLoading = false;
 
 
   // Exported functions
@@ -398,7 +449,7 @@ var mw = (function(){
 
       doConnect();
 
-      if ($("#issue-remember").is(':checked')) {
+      if ($("#issue-remember").is(":checked")) {
         localStorage.setItem("user", aUsername);
         localStorage.setItem("key", aApiKey);
       }
@@ -439,6 +490,61 @@ var mw = (function(){
           .on("click", function(event) {
             $(this).remove();
           }));
+    },
+
+
+    TabIssues: function() {
+      if (isLoading) return; // TODO
+
+      setActiveTab("issues");
+
+      hideAllBlocks();
+
+      bIssues.toggle(true);
+
+      isLoading = true;
+      lockTabs(true);
+
+      ajaxRefreshIssues()
+        .always(function() {
+          isLoading = false;
+          lockTabs(false);
+        });
+    },
+
+    TabAdmin: function() {
+      if (isLoading) return;
+
+      setActiveTab("admin");
+
+      hideAllBlocks();
+
+      bAdmin.toggle(true);
+    },
+
+    SubmitRenameScene: function() {
+      var srcSceneField = $("#admin-renamescene input[name=srcScene]");
+      var newSceneField = $("#admin-renamescene input[name=newScene]");
+
+      var srcScene = srcSceneField.val();
+      var newScene = newSceneField.val();
+
+      if (srcScene.length === 0 || newScene.length === 0) return;
+
+      $("#admin-renamescene input").prop("disabled", true);
+
+      ajaxRenameScene(srcScene, newScene)
+        .always(function() {
+          $("#admin-renamescene input").prop("disabled", false);
+        })
+        .done(function( result ) {
+          srcSceneField.val("");
+          newSceneField.val("");
+          $("#admin-renamescene-res").text(result.affectedIssues + " issue(s) have been updated.");
+        })
+        .fail(function() {
+          $("#admin-renamescene-res").text("Request failed.");
+        });
     }
 
   };

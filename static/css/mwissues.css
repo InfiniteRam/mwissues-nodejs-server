@@ -126,6 +126,24 @@ h2 {
   height: 20px;
 }
 
+/* Forms */
+
+form {
+  margin: 10px;
+}
+
+form > div {
+  margin: 4px;
+}
+
+form label {
+  width: 180px;
+}
+
+form input[type=text] {
+  width: 300px;
+}
+
 /* Auth */
 
 .auth-field {

@@ -191,16 +191,17 @@ module.exports = (function() {
     },
 
     // Rename a scene globally
+    // callback(affectedRows, error)
     renameScene: function(oldName, newName, callback) {
 
       pool.query('UPDATE issues SET scene = ? WHERE ?',
-          newName, {scene: oldName}, function(err, result) {
+          [newName, {scene: oldName}], function(err, result) {
         if (err) {
-          callback(err);
+          callback(null, err);
           return;
         }
 
-        callback(null);
+        callback(result.affectedRows);
       });
 
     }

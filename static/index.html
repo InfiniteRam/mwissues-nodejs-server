@@ -49,9 +49,11 @@
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="mwissues-navbar-collapse-1">
-          <ul class="nav navbar-nav navbar-right">
-            <!-- <li class="active"><a href="#">Issue list <span class="sr-only">(current)</span></a></li> -->
-            <li><a href="https://infiniteram.com/mwissues/">Help</a></li>
+          <ul id="nav-tabs" class="nav navbar-nav navbar-right">
+            <li id="tab-issues" style="display:none"><a href="#" onclick="javascript:mw.TabIssues()">Issue list</a></li>
+            <li id="tab-admin" style="display:none"><a href="#" onclick="javascript:mw.TabAdmin()">Admin</a></li>
+
+            <li><a href="https://infiniteram.com/mwissues/" target="_blank">Help</a></li>
           </ul>
         </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
@@ -128,6 +130,32 @@
       </div>
     </div>
 
+    <div class="container" id="b-admin" style="display:none">
+      <h2>Administration</h2>
+      <div>
+        <h3>Rename a scene</h3>
+        <div>
+          If you moved or renamed a scene in your Unity project, you will not be able to view the issues in the editor.<br>
+          Use this form to update all the existing issues with the new scene path.
+        </div>
+        <form id="admin-renamescene" onsubmit="javascript:mw.SubmitRenameScene(); return false">
+          <div id="admin-renamescene-res">
+          </div>
+          <div>
+            <label for="srcScene">Scene to rename:</label>
+            <input type="text" name="srcScene">
+          </div>
+          <div>
+            <label for="newScene">New scene path:</label>
+            <input type="text" name="newScene">
+          </div>
+          <div>
+            <input type="submit" value="Rename scene">
+          </div>
+        </form>
+      </div>
+    </div>
+
     <script type="text/javascript" src="js/jquery-2.2.0.min.js"></script>
 
     <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -136,4 +164,4 @@
     <script type="text/javascript" src="js/mwissues.js"></script>
 
   </body>
-</html> 
+</html>
