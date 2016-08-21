@@ -4,6 +4,49 @@
  * LICENSE file in the root directory of this repository.
  */
 
+.navbar {
+  background-image:-webkit-linear-gradient(top,#3a3154 0,#52558c 100%);
+  background-image:-o-linear-gradient(top,#3a3154 0,#52558c 100%);
+  background-image:-webkit-gradient(linear,left top,left bottom,from(#3a3154),to(#52558c));
+  background-image:linear-gradient(to bottom,#3a3154 0,#52558c 100%);
+  border-color: #7f1fd8;
+}
+
+.navbar-inverse .navbar-brand,
+.navbar-inverse .navbar-nav > li > a {
+  color: #bccad1;
+}
+
+.navbar-nav > li > a:hover {
+  border-bottom-color: #1fbed8;
+  border-bottom-style: solid;
+  border-bottom-width: 3px;
+  margin-bottom: -3px;
+}
+
+.navbar-inverse .navbar-nav > .active > a {
+  background-color: #37304d;
+  background-image: none;
+  border-bottom-color: #7f1fd8;
+  border-bottom-style: solid;
+  border-bottom-width: 3px;
+  margin-bottom: -3px;
+}
+
+h1, h2, h3, h4 {
+  color: #2b1e6b;
+}
+
+.jumbotron {
+  background-color: #e1dcff;
+}
+
+body {
+  background-color: #f4f2ff;
+}
+
+/* ---- */
+
 .modal-overlay {
   position: fixed;
   z-index: 2000;
