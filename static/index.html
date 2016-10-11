@@ -78,12 +78,12 @@
       <div class="row">
         <div class="col-md-4 col-md-push-4">
           <div class="auth-field"><b>User name</b><input id="issue-user" type="text"></div>
-          <div class="auth-field"><b>API Key</b><input id="issue-key" type="password"></div>
+          <div class="auth-field"><b>Password</b><input id="issue-key" type="password"></div>
           <div><input id="issue-remember" type="checkbox"> Remember my credentials</div>
           <br>
           <a class="btn btn-default btn-block" onclick="javascript:mw.Connect()">Login</a>
           <hr>
-          <a class="btn btn-default btn-block" onclick="javascript:mw.ConnectAnon()">Anonymous login</a>
+          <a id="anon-connect-button" class="btn btn-default btn-block" onclick="javascript:mw.ConnectAnon()">Anonymous login</a>
         </div>
       </div>
     </div>

@@ -10,7 +10,7 @@
 // * dom is a jQuery dom element representing the issue
 //   It's a <li> already filled with the usual "issue" data
 // * data is your custom data as a string
-var customDataHandler = function(dom, data) {
+var customDataView = function(dom, data) {
   // Add code to handle your custom data here
 }
 
@@ -60,11 +60,10 @@ var mw = (function(){
   var bAdmin = $("#b-admin");
 
 
-  // Auth
-  var aAnon;
+  // TODO Auth
+  // This data is filled by ajax auth calls
+  var aUserid;
   var aUsername;
-  var aApiKey;
-
   var aPermissions;
 
 
@@ -86,14 +85,14 @@ var mw = (function(){
 
 
   // Flow
-  function doConnect() {
+  function doLogin(anon, login, key) { // TODO Complete redo with new login
     // Load all issues
-    ajaxAuth()
+    ajaxLogin(anon, login, key)
       .always(function() {
         bLoading.toggle(false);
       })
       .done(function( result ) {
-        if (!aAnon && !result.valid) {
+        if (result.valid === false) {
           bAuth.toggle(true);
           showError("Authentication failed");
           return;
@@ -191,8 +190,8 @@ var mw = (function(){
     }
 
     // Custom data
-    if (issue.customData && customDataHandler) {
-      customDataHandler(dom, issue.customData);
+    if (issue.customData && customDataView) {
+      customDataView(dom, issue.customData);
     }
 
     // Add invisible clear at the end to prevent overflow
@@ -313,14 +312,37 @@ var mw = (function(){
 
 
   // Ajax calls
-  function ajaxAuth() {
+  function ajaxCheckAuth() {
     return $.ajax({
       method: "GET",
       url: "auth",
-      dataType: "json",
-      data: { user: aUsername, key: aApiKey }
+      dataType: "json"
     })
       .done(function( result ) {
+        // TODO fill all auth data including username and anon state
+        aUserid = result.userid;
+        aUsername = result.username;
+        aPermissions = result.permissions;
+
+        $("#anon-connect-button").toggle(!!result.anonAllowed);
+      })
+      .fail(function( xhr ) {
+        showError("Request failed : "+ xhr.statusText);
+        console.error(xhr);
+      });
+  }
+
+  function ajaxLogin(anon, login, key) {
+    return $.ajax({
+      method: "POST",
+      url: "auth/login",
+      dataType: "json",
+      data: { anon:anon, login: login, password: key } // TODO param names
+    })
+      .done(function( result ) {
+        // Fill all auth data
+        aUserid = result.userid;
+        aUsername = result.username;
         aPermissions = result.permissions;
       })
       .fail(function( xhr ) {
@@ -329,12 +351,13 @@ var mw = (function(){
       });
   }
 
+  // TODO ajaxLogout and logout button
+
   function ajaxRefreshIssues() {
     return $.ajax({
       method: "GET",
       url: "issue",
-      dataType: "json",
-      data: { user: aUsername, key: aApiKey }
+      dataType: "json"
     })
       .done(function( result ) {
         refreshIssueList(result.list);
@@ -393,9 +416,6 @@ var mw = (function(){
 
 
   $(document).ready(function() {
-    bLoading.toggle(false);
-    bAuth.toggle(true);
-
     // Hooks
     $("#issue-cat-cont > a").on("click", function(event) {
       $(this).toggleClass("filter-disabled");
@@ -430,6 +450,40 @@ var mw = (function(){
       if (user) { $("#issue-user").val(user); }
     }
 
+    // Check session
+    // Draw auth form if not connected or on error
+    ajaxCheckAuth()
+      .done(function() {
+        if ( typeof(aUserid) === "undefined" ) {
+          bLoading.toggle(false);
+          bAuth.toggle(true);
+          return;
+        }
+
+        if (aPermissions.indexOf("admin") === -1
+          && aPermissions.indexOf("view") === -1) {
+          bAuth.toggle(true);
+          return;
+        }
+
+        ajaxRefreshIssues()
+          .always(function() {
+            bLoading.toggle(false);
+          })
+          .done(function() {
+            bIssues.toggle(true);
+            showTabs();
+            setActiveTab("issues");
+          })
+          .fail(function() {
+            bAuth.toggle(true);
+          });
+      })
+      .fail(function() {
+        bLoading.toggle(false);
+        bAuth.toggle(true);
+      });
+
   });
 
   // TODO
@@ -443,15 +497,14 @@ var mw = (function(){
       bLoading.toggle(true);
       bAuth.toggle(false);
 
-      aAnon = false;
-      aUsername = $("#issue-user").val();
-      aApiKey = $("#issue-key").val();
+      var login = $("#issue-user").val();
+      var key = $("#issue-key").val();
 
-      doConnect();
+      doLogin(false, login, key);
 
       if ($("#issue-remember").is(":checked")) {
-        localStorage.setItem("user", aUsername);
-        localStorage.setItem("key", aApiKey);
+        localStorage.setItem("user", login);
+        localStorage.setItem("key", key);
       }
       else {
         localStorage.clear();
@@ -462,11 +515,7 @@ var mw = (function(){
       bLoading.toggle(true);
       bAuth.toggle(false);
 
-      aAnon = true;
-      aUsername = "Anonymous";
-      aApiKey = "";
-
-      doConnect();
+      doLogin(true);
     },
 
     CloseError: function() {

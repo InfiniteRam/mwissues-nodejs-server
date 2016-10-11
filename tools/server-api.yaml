@@ -317,8 +317,5 @@ definitions:
 securityDefinitions:
   apiKey:
     type: apiKey
-    description:
-      An additional `user` value corresponding to the username is sent by the MwIssues client,
-      but it is not used by the default implementation, which only checks the API key.
     in: query
     name: key

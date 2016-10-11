@@ -38,7 +38,7 @@ app.post('/renameScene', function (req, res) {
     return;
   }
 
-  issuesdb.renameScene(oldScene, newScene, function(affectedIssues, err) {
+  issuesdb.renameScene(oldScene, newScene, function(err, affectedIssues) {
     if (err) {
       logger.error(err);
       res.sendStatus(500);

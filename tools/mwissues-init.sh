@@ -27,7 +27,7 @@ START_ARGS="--background --user ${MWISSUES_USER} --chuid ${MWISSUES_USER} --chdi
 STOP_ARGS="--user ${MWISSUES_USER}"
 
 do_stop_cmd() {
-    kill `cat $PIDFILE`
+    kill $(cat $PIDFILE)
     rm -f $PIDFILE
     return $?
 }

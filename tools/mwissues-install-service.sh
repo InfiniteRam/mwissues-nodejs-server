@@ -2,13 +2,13 @@
 # Author: Bastien Brunnenstein
 
 if [ $(id -u) -ne 0 ]; then
-  echo 'You '
-  return 1
+  echo 'You must run this script as root'
+  exit 1
 fi
 
 if [ ! -e tools/issues-mysql.sql ]; then
   echo 'Make sure you are in the right directory (mwissues-nodejs-server) and try again'
-  return 1
+  exit 1
 fi
 
 # Stop on error
@@ -20,7 +20,7 @@ MWUSER=$1
 if [ -z $MWUSER ]; then
   MWUSER=$USER
 fi;
-MWPATH=`pwd`
+MWPATH=$(pwd)
 
 echo 'Installing MwIssues service...'
 

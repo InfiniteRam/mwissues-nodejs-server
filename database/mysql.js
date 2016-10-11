@@ -13,6 +13,8 @@ var pool  = mysql.createPool(config.mysqlParams);
 
 var issues = require('../issues');
 
+var perm_ut = require('../utils/permissions');
+
 
 module.exports = (function() {
 
@@ -190,18 +192,86 @@ module.exports = (function() {
 
     },
 
+
+
+    // User credentials
+
+    // Get user credentials
+    // callback(err, salt, hashedPassword:Buffer, userid, permissions)
+    getUserCredentials: function(login, callback) {
+
+      pool.query('SELECT * FROM users WHERE login = ? AND enabled = TRUE',
+          login, function(err, result) {
+        if (err) {
+          callback(err);
+          return;
+        }
+
+        if (result.length == 0) {
+          callback('User not found');
+          return;
+        }
+
+        callback(null, result[0].salt, result[0].password,
+          result[0].id, perm_ut.fromString(result[0].permissions));
+      });
+    },
+
+    // Get user infos
+    // callback(err, username, permissions)
+    getUserInfo: function(userid, callback) {
+
+      pool.query('SELECT login, permissions FROM users WHERE id = ? AND enabled = TRUE',
+          userid, function(err, result) {
+        if (err) {
+          callback(err);
+          return;
+        }
+
+        if (result.length == 0) {
+          callback('User id not found');
+          return;
+        }
+
+        callback(null, result[0].login, perm_ut.fromString(result[0].permissions));
+      });
+    },
+
+    // Create a new user
+    // callback(err, userid)
+    createUser: function(login, salt, hashedPassword, permissions, callback) {
+
+      var set = {};
+      set.login = login;
+      set.salt = salt;
+      set.password = hashedPassword;
+      set.permissions = perm_ut.toString(permissions);
+
+      pool.query('INSERT INTO users SET ?', set, function(err, result) {
+        if (err) {
+          callback(err);
+          return;
+        }
+
+        callback(null, result.insertId);
+      });
+    },
+
+
+    // Admin stuff
+
     // Rename a scene globally
-    // callback(affectedRows, error)
+    // callback(err, affectedRows)
     renameScene: function(oldName, newName, callback) {
 
       pool.query('UPDATE issues SET scene = ? WHERE ?',
           [newName, {scene: oldName}], function(err, result) {
         if (err) {
-          callback(null, err);
+          callback(err);
           return;
         }
 
-        callback(result.affectedRows);
+        callback(null, result.affectedRows);
       });
 
     }
