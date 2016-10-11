@@ -93,6 +93,10 @@ app.post('/', upload.single('screenshot'), auth.sanitize, auth.enforce('create')
 
   var issue = issues.validateInput(req.body);
 
+  // Set reporter & key from auth data
+  issue.reporter = req.auth.userid;
+  issue.reporterkey = req.auth.keyid;
+
   if (!issue || !issues.isComplete(issue))
   {
     res.status(400).send('Malformed request');
@@ -115,8 +119,11 @@ app.post('/', upload.single('screenshot'), auth.sanitize, auth.enforce('create')
       return;
     }
 
-    // TODO
-    logger.info('#'+ id +' created by '+ issue.reporter +'@'+ req.ip);
+    if (req.auth.keyname)
+      logger.info('#'+ id +' created by '+ req.auth.username +'@'+ req.ip +' key '+ req.auth.keyname);
+    else
+      logger.info('#'+ id +' created by '+ req.auth.username +'@'+ req.ip);
+
     res.status(201).json({id: id});
   });
 
@@ -203,8 +210,11 @@ app.put('/:issueId', auth.sanitize, auth.enforce('update'),
       return;
     }
 
-    // TODO
-    logger.info('#'+ req.issue.id +' updated by '+ 'TODO' +'@'+ req.ip);
+    if (req.auth.keyname)
+      logger.info('#'+ req.issue.id +' updated by '+ req.auth.username +'@'+ req.ip +' key '+ req.auth.keyname);
+    else
+      logger.info('#'+ req.issue.id +' updated by '+ req.auth.username +'@'+ req.ip);
+
     res.status(204).send('Updated');
   });
 
@@ -222,8 +232,11 @@ app.delete('/:issueId', auth.sanitize, auth.enforce('delete'),
       return;
     }
 
-    // TODO
-    logger.info('#'+ req.issue.id +' deleted by '+ 'TODO' +'@'+ req.ip);
+    if (req.auth.keyname)
+      logger.info('#'+ req.issue.id +' deleted by '+ req.auth.username +'@'+ req.ip +' key '+ req.auth.keyname);
+    else
+      logger.info('#'+ req.issue.id +' deleted by '+ req.auth.username +'@'+ req.ip);
+
     res.status(204).send('Deleted');
   });
 

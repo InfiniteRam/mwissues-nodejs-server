@@ -30,7 +30,7 @@ module.exports = {
   //  username
   //  permissions
   //  key (if apikey is used)
-  //  keyname (if apikey is used)
+  //  keyname (if apikey is used and key name is not NULL)
   sanitize: function(req, res, next) {
     authsession(req, res, function(err) {
       if (err) {
