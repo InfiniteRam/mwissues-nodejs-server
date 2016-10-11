@@ -41,6 +41,8 @@ module.exports = (function() {
         customData: issue.customData
       };
 
+      // TODO Get IDs from names (reporter, assignee, reporterkey)
+
       pool.query('INSERT INTO issues SET ?', set, function(err, result) {
         if (err) {
           callback(err);
@@ -77,6 +79,7 @@ module.exports = (function() {
       if (typeof(issue.customData) !== 'undefined')
         set.customData = issue.customData;
 
+      // TODO Get IDs from names (reporter, assignee, reporterkey)
 
       pool.query('UPDATE issues SET ? WHERE ?', [set, {id: issue.id}], function(err, result) {
         if (err) {
@@ -110,7 +113,13 @@ module.exports = (function() {
     // callback is (err, issue)
     getIssue: function(id, callback) {
 
-      pool.query('SELECT * FROM issues WHERE ?', {id: id}, function(err, result) {
+      pool.query(
+          'SELECT i.*, rep.login AS reportername, ass.login AS assigneename, ak.keyname AS reporterkeyname'
+          + ' FROM issues AS i'
+          + ' LEFT JOIN users AS rep ON i.reporter = rep.id'
+          + ' LEFT JOIN users AS ass ON i.assignee = ass.id'
+          + ' LEFT JOIN apikeys AS ak ON i.reporterkey = ak.id'
+          + ' WHERE ?', {id: id}, function(err, result) {
         if (err) {
           callback(err);
           return;
@@ -135,7 +144,13 @@ module.exports = (function() {
           start = filter.start;
       }*/
 
-      pool.query('SELECT * FROM issues WHERE archived = FALSE ORDER BY id ASC', function(err, result) {
+      pool.query(
+          'SELECT i.*, rep.login AS reportername, ass.login AS assigneename, ak.keyname AS reporterkeyname'
+          + ' FROM issues AS i'
+          + ' LEFT JOIN users AS rep ON i.reporter = rep.id'
+          + ' LEFT JOIN users AS ass ON i.assignee = ass.id'
+          + ' LEFT JOIN apikeys AS ak ON i.reporterkey = ak.id'
+          + ' WHERE archived = FALSE ORDER BY id ASC', function(err, result) {
         if (err) {
           callback(err);
           return;

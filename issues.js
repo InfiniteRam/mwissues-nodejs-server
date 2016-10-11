@@ -21,8 +21,12 @@ module.exports = (function() {
     // cameraPosition
     // cameraOrientation
     // orthographicSize*
-    // reporter
-    // assignee*
+    // reporter (id)
+    // reportername
+    // reporterkey* (id)
+    // reporterkeyname*
+    // assignee* (id)
+    // assigneename*
     // screenshot*
     // customData*
 
@@ -30,6 +34,7 @@ module.exports = (function() {
 
     // Check that the data retreived from the client is valid
     // Return the processed data or null
+    // Input ignore IDs, and reporter data which is filled by auth
     validateInput: function(data) {
 
       var issue = {};
@@ -48,11 +53,11 @@ module.exports = (function() {
       if (typeof(data.scene) === 'string')
         issue.scene = data.scene;
 
-      if (typeof(data.reporter) === 'string')
-        issue.reporter = data.reporter;
-
-      if (typeof(data.assignee) === 'string')
+      if (Number.isFinite(parseInt(data.assignee)))
         issue.assignee = data.assignee;
+
+      if (typeof(data.assigneename) === 'string')
+        issue.assigneename = data.assigneename;
 
       if (typeof(data.customData) === 'string')
         issue.customData = data.customData;
@@ -95,7 +100,11 @@ module.exports = (function() {
         cameraOrientation: issue.cameraOrientation,
         orthographicSize: issue.orthographicSize,
         reporter: issue.reporter,
+        reportername: issue.reportername,
+        reporterkey: issue.reporterkey,
+        reporterkeyname: issue.reporterkeyname,
         assignee: issue.assignee,
+        assigneename: issue.assigneename,
         hasScreenshot: !!issue.screenshot,
         customData: issue.customData
       };
@@ -123,8 +132,7 @@ module.exports = (function() {
         && typeof(issue.state) !== 'undefined'
         && typeof(issue.category) !== 'undefined'
         && typeof(issue.cameraPosition) !== 'undefined'
-        && typeof(issue.cameraOrientation) !== 'undefined'
-        && typeof(issue.reporter) !== 'undefined')
+        && typeof(issue.cameraOrientation) !== 'undefined')
         return true;
 
       return false;
