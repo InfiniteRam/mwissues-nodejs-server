@@ -18,6 +18,81 @@ var perm_ut = require('../utils/permissions');
 
 module.exports = (function() {
 
+  // Get user id from username
+  // callback is (err, id)
+  function getUserId(username, callback) {
+
+    pool.query('SELECT id FROM users WHERE login = ?',
+        username, function(err, result) {
+      if (err) {
+        callback(err);
+        return;
+      }
+
+      if (result.length == 0) {
+        callback('User name not found');
+        return;
+      }
+
+      callback(null, result[0].id);
+    });
+  }
+
+  // Check an issue, fill IDs where only the name is available
+  // callbakc is (err)
+  function checkIssueIDs(issue, checkReporter, checkAssignee, callback) {
+
+    function doCheckReporter(cb) {
+      if (!issue.reporter && issue.reportername) {
+        getUserId(issue.reportername, function(err, id) {
+          if (err) {
+            cb(err);
+            return;
+          }
+          issue.reporter = id;
+          cb();
+        });
+      }
+      else
+        cb();
+    }
+
+    function doCheckAssignee(cb) {
+      if (!issue.assignee && issue.assigneename) {
+        getUserId(issue.assigneename, function(err, id) {
+          if (err) {
+            cb(err);
+            return;
+          }
+          issue.assignee = id;
+          cb();
+        });
+      }
+      else
+        cb();
+    }
+
+    if (checkReporter && checkAssignee) {
+      doCheckReporter(function(err) {
+        if (err) {
+          callback(err);
+          return;
+        }
+        doCheckAssignee(callback);
+      });
+    }
+    else if (checkReporter) {
+      doCheckReporter(callback);
+    }
+    else if (checkAssignee) {
+      doCheckAssignee(callback);
+    }
+    else
+      callback();
+
+  }
+
+
   return {
 
     // Create an issue
@@ -25,31 +100,37 @@ module.exports = (function() {
     // callback is (err, insertId)
     createIssue: function(issue, callback) {
 
-      var set = {
-        title: issue.title,
-        description: issue.description,
-        scene: issue.scene,
-        state: issue.state,
-        category: issue.category,
-        position: issue.position,
-        cameraPosition: issue.cameraPosition,
-        cameraOrientation: issue.cameraOrientation,
-        orthographicSize: issue.orthographicSize,
-        reporter: issue.reporter,
-        assignee: issue.assignee,
-        screenshot: issue.screenshot,
-        customData: issue.customData
-      };
-
-      // TODO Get IDs from names (reporter, assignee, reporterkey)
-
-      pool.query('INSERT INTO issues SET ?', set, function(err, result) {
+      checkIssueIDs(issue, true, true, function(err) {
         if (err) {
           callback(err);
           return;
         }
 
-        callback(null, result.insertId);
+        var set = {
+          title: issue.title,
+          description: issue.description,
+          scene: issue.scene,
+          state: issue.state,
+          category: issue.category,
+          position: issue.position,
+          cameraPosition: issue.cameraPosition,
+          cameraOrientation: issue.cameraOrientation,
+          orthographicSize: issue.orthographicSize,
+          reporter: issue.reporter,
+          assignee: issue.assignee,
+          screenshot: issue.screenshot,
+          customData: issue.customData
+        };
+
+        pool.query('INSERT INTO issues SET ?', set, function(err, result) {
+          if (err) {
+            callback(err);
+            return;
+          }
+
+          callback(null, result.insertId);
+        });
+
       });
 
     },
@@ -58,36 +139,42 @@ module.exports = (function() {
     // Issue must be a valid issue object
     updateIssue: function(issue, callback) {
 
-      // Update set is limited to editable values
-      var set = {};
-
-      if (typeof(issue.title) !== 'undefined')
-        set.title = issue.title;
-
-      if (typeof(issue.description) !== 'undefined')
-        set.description = issue.description;
-
-      if (typeof(issue.state) !== 'undefined')
-        set.state = issue.state;
-
-      if (typeof(issue.category) !== 'undefined')
-        set.category = issue.category;
-
-      if (typeof(issue.assignee) !== 'undefined')
-        set.assignee = issue.assignee;
-
-      if (typeof(issue.customData) !== 'undefined')
-        set.customData = issue.customData;
-
-      // TODO Get IDs from names (reporter, assignee, reporterkey)
-
-      pool.query('UPDATE issues SET ? WHERE ?', [set, {id: issue.id}], function(err, result) {
+      checkIssueIDs(issue, false, true, function(err) {
         if (err) {
           callback(err);
           return;
         }
 
-        callback(null);
+        // Update set is limited to editable values
+        var set = {};
+
+        if (typeof(issue.title) !== 'undefined')
+          set.title = issue.title;
+
+        if (typeof(issue.description) !== 'undefined')
+          set.description = issue.description;
+
+        if (typeof(issue.state) !== 'undefined')
+          set.state = issue.state;
+
+        if (typeof(issue.category) !== 'undefined')
+          set.category = issue.category;
+
+        if (typeof(issue.assignee) !== 'undefined')
+          set.assignee = issue.assignee;
+
+        if (typeof(issue.customData) !== 'undefined')
+          set.customData = issue.customData;
+
+        pool.query('UPDATE issues SET ? WHERE ?', [set, {id: issue.id}], function(err, result) {
+          if (err) {
+            callback(err);
+            return;
+          }
+
+          callback(null);
+        });
+
       });
 
     },
