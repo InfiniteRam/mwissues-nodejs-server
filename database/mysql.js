@@ -382,20 +382,10 @@ module.exports = (function() {
         var uperms = perm_ut.fromString(result[0].uperms);
         var kperms = perm_ut.fromString(result[0].kperms);
 
-        var perms;
-
-        if (uperms.indexOf('admin') !== -1) {
-          // Admin can create any kind of key
-          perms = kperms;
-        }
-        else {
-          // For others, compute intersection
-          perms = uperms.filter(function(n) {
-              return kperms.indexOf(n) > -1;
-            });
-        }
-
-        callback(null, result[0].userid, result[0].username, result[0].keyid, result[0].keyname, perms);
+        callback(null,
+          result[0].userid, result[0].username,
+          result[0].keyid, result[0].keyname,
+          perm_ut.intersect(uperms, kperms));
       });
     },
 

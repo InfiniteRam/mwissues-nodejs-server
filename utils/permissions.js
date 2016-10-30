@@ -55,6 +55,24 @@ module.exports = {
       return null;
 
     return ret;
+  },
+
+  // Compute permissions intersection between two arrays
+  intersect: function(perms1, perms2) {
+
+    // "Admin" means "all permissions"
+    if (perms1.indexOf('admin') !== -1) {
+      return perms2;
+    }
+
+    if (perms2.indexOf('admin') !== -1) {
+      return perms1;
+    }
+
+    // For others, compute intersection
+    return perms1.filter(function(n) {
+        return perms2.indexOf(n) > -1;
+      });
   }
 
 }
