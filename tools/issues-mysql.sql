@@ -30,6 +30,7 @@ CREATE TABLE `apikeys` (
   `key` char(32) NOT NULL,
   `keyname` varchar(64) DEFAULT NULL,
   `userid` int(10) unsigned NOT NULL,
+  `permissions` varchar(32) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idapikeys_UNIQUE` (`key`),
   KEY `apikey_userid_idx` (`userid`),

@@ -360,6 +360,46 @@ module.exports = (function() {
     },
 
 
+    // API keys
+
+    // Get key infos
+    // callback(err, userid, username, keyid, keyname?, permissions)
+    // returned permissions is intersection of user permissions with key permissions
+    getKeyInfo: function(key, callback) {
+
+      pool.query('SELECT u.id AS userid, u.login AS username, k.id AS keyid, k.keyname, u.permissions AS uperms, k.permissions AS kperms FROM users u, apikeys k WHERE k.key = ? AND u.id = k.userid AND enabled = TRUE',
+          userid, function(err, result) {
+        if (err) {
+          callback(err);
+          return;
+        }
+
+        if (result.length == 0) {
+          callback('User id not found');
+          return;
+        }
+
+        var uperms = perm_ut.fromString(result[0].uperms);
+        var kperms = perm_ut.fromString(result[0].kperms);
+
+        var perms;
+
+        if (uperms.indexOf('admin') !== -1) {
+          // Admin can create any kind of key
+          perms = kperms;
+        }
+        else {
+          // For others, compute intersection
+          perms = uperms.filter(function(n) {
+              return kperms.indexOf(n) > -1;
+            });
+        }
+
+        callback(null, result[0].userid, result[0].username, result[0].keyid, result[0].keyname, perms);
+      });
+    },
+
+
     // Admin stuff
 
     // Rename a scene globally

@@ -82,9 +82,22 @@ module.exports = {
           return; // Prevent next() from being called
         }
       }
-      // TODO If key is valid and userid is not set, find API key and fill auth fields
+      // If key is valid and userid is not set, find API key and fill auth fields
       else if (typeof(req.auth.key) === 'string') {
-
+        // API key
+        auth_database.getKeyInfo(req.auth.key, function(err, userid, username, keyid, keyname, permissions) {
+          if (err) {
+            next(err);
+            return;
+          }
+          req.auth.userid = userid;
+          req.auth.username = username;
+          req.auth.keyid = keyid;
+          req.auth.keyname = keyname;
+          req.auth.permissions = permissions;
+          next();
+        });
+        return; // Prevent next() from being called
       }
 
       next();
