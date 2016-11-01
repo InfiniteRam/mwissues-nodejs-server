@@ -98,13 +98,6 @@ var mw = (function(){
           return;
         }
 
-        if (aPermissions.indexOf("admin") === -1
-          && aPermissions.indexOf("view") === -1) {
-          bAuth.toggle(true);
-          showError("You don't have the permission to view the issue list");
-          return;
-        }
-
         bLoading.toggle(true);
         ajaxRefreshIssues()
           .always(function() {
@@ -360,6 +353,16 @@ var mw = (function(){
   // TODO ajaxLogout and logout button
 
   function ajaxRefreshIssues() {
+
+    // If we don't have view permissions, empty the list
+    if (aPermissions.indexOf("admin") === -1
+      && aPermissions.indexOf("view") === -1) {
+      $("#issue-list").html("").append($("<p>").text("You are not allowed to view the issue list"));
+
+      // Resolve instantly
+      return $.Deferred(function(d){d.resolve();});
+    }
+
     return $.ajax({
       method: "GET",
       url: "issue",
@@ -462,12 +465,6 @@ var mw = (function(){
       .done(function() {
         if ( typeof(aUserid) === "undefined" ) {
           bLoading.toggle(false);
-          bAuth.toggle(true);
-          return;
-        }
-
-        if (aPermissions.indexOf("admin") === -1
-          && aPermissions.indexOf("view") === -1) {
           bAuth.toggle(true);
           return;
         }
