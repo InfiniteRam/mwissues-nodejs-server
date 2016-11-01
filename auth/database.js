@@ -78,6 +78,12 @@ module.exports = {
   getUserInfo: function (userid, callback) {
 
     authdb.getUserInfo(userid, callback);
+  },
+
+  // callback(err, userid, username, keyid, keyname?, permissions)
+  getKeyInfo: function (key, callback) {
+
+    authdb.getKeyInfo(key, callback);
   }
 
 };

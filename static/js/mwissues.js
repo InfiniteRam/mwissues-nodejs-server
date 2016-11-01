@@ -180,19 +180,19 @@ var mw = (function(){
     }
 
     // Reporter
-    if (issue.reporterkeyname) {
+    if (issue.reporterKeyName) {
       dom.append($("<p>").addClass("issue-reporter")
-        .text(issue.reportername + " (" + issue.reporterkeyname + ")").prepend($("<i>").text("Reporter: ")));
+        .text(issue.reporterName + " (" + issue.reporterKeyName + ")").prepend($("<i>").text("Reporter: ")));
     }
     else {
       dom.append($("<p>").addClass("issue-reporter")
-        .text(issue.reportername).prepend($("<i>").text("Reporter: ")));
+        .text(issue.reporterName).prepend($("<i>").text("Reporter: ")));
     }
 
     // Assignee
-    if (issue.assigneename) {
+    if (issue.assigneeName) {
       dom.append($("<p>").addClass("issue-assignee")
-        .text(issue.assigneename).prepend($("<i>").text("Assignee: ")));
+        .text(issue.assigneeName).prepend($("<i>").text("Assignee: ")));
     }
 
     // Custom data

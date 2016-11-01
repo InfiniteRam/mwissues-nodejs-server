@@ -24,7 +24,7 @@ module.exports = {
 
   // Express middleware called for every request receiving auth data
   // Exceptions: /auth/login and /auth/logout
-  // TODO req.auth is filled with:
+  // req.auth is filled with:
   //  userid
   //  keyid (if apikey is used)
   //  username
@@ -127,7 +127,7 @@ module.exports = {
           callback(null, -1, 'Anonymous', config.anonymousPerms);
         }
         else {
-          callback('Anonymous access denied');
+          callback({autherr:'Anonymous access denied'});
         }
       }
       else {
@@ -141,7 +141,7 @@ module.exports = {
           }
 
           if (!valid) {
-            callback('Invalid user or password');
+            callback({autherr:'Invalid user or password'});
           }
 
           else

@@ -22,11 +22,11 @@ module.exports = (function() {
     // cameraOrientation
     // orthographicSize*
     // reporter (id)
-    // reportername
-    // reporterkey* (id)
-    // reporterkeyname*
+    // reporterName
+    // reporterKey* (id)
+    // reporterKeyName*
     // assignee* (id)
-    // assigneename*
+    // assigneeName*
     // screenshot*
     // customData*
 
@@ -56,8 +56,8 @@ module.exports = (function() {
       if (Number.isFinite(parseInt(data.assignee)))
         issue.assignee = data.assignee;
 
-      if (typeof(data.assigneename) === 'string')
-        issue.assigneename = data.assigneename;
+      if (typeof(data.assigneeName) === 'string')
+        issue.assigneeName = data.assigneeName;
 
       if (typeof(data.customData) === 'string')
         issue.customData = data.customData;
@@ -100,11 +100,11 @@ module.exports = (function() {
         cameraOrientation: issue.cameraOrientation,
         orthographicSize: issue.orthographicSize,
         reporter: issue.reporter,
-        reportername: issue.reportername,
-        reporterkey: issue.reporterkey,
-        reporterkeyname: issue.reporterkeyname,
+        reporterName: issue.reporterName,
+        reporterKey: issue.reporterKey,
+        reporterKeyName: issue.reporterKeyName,
         assignee: issue.assignee,
-        assigneename: issue.assigneename,
+        assigneeName: issue.assigneeName,
         hasScreenshot: !!issue.screenshot,
         customData: issue.customData
       };

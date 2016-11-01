@@ -17,6 +17,10 @@ var app = express();
 module.exports = app;
 
 
+var methodOverride = require('method-override');
+app.use(methodOverride());
+
+
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -28,8 +32,14 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.get('/', auth.sanitize, function (req, res) {
   auth.getAuthInfos(req, function(err, data) {
     if (err) {
-      logger.error(err);
-      res.sendStatus(500);
+      if (err.autherr) {
+        logger.info('Auth failed: '+ err.autherr);
+        res.json({valid: false, error: err.autherr});
+      }
+      else {
+        logger.error(err);
+        res.sendStatus(500);
+      }
       return;
     }
 
@@ -42,9 +52,14 @@ app.get('/', auth.sanitize, function (req, res) {
 app.post('/login', function (req, res) {
   auth.login(req, res, function(err, userid, username, permissions) {
     if (err) {
-      logger.error(err);
-      // SPECIAL CASE: For login send valid=false instead of errors
-      res.json({valid: false});
+      if (err.autherr) {
+        logger.info('Auth failed: '+ err.autherr);
+        res.json({valid: false, error: err.autherr});
+      }
+      else {
+        logger.error(err);
+        res.sendStatus(500);
+      }
       return;
     }
     res.json({

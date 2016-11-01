@@ -50,7 +50,7 @@ CREATE TABLE `issues` (
   `cameraOrientation` varchar(64) NOT NULL,
   `orthographicSize` float DEFAULT NULL,
   `reporter` int(10) unsigned NOT NULL,
-  `reporterkey` int(10) unsigned DEFAULT NULL,
+  `reporterKey` int(10) unsigned DEFAULT NULL,
   `assignee` int(10) unsigned DEFAULT NULL,
   `screenshot` varchar(64) DEFAULT NULL,
   `customData` text,
@@ -60,8 +60,8 @@ CREATE TABLE `issues` (
   KEY `archived` (`archived`),
   KEY `issues_reporterid_idx` (`reporter`),
   KEY `issues_assigneeid_idx` (`assignee`),
-  KEY `issues_reporterkeyid_idx` (`reporterkey`),
+  KEY `issues_reporterkeyid_idx` (`reporterKey`),
   CONSTRAINT `issues_assigneeid` FOREIGN KEY (`assignee`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `issues_reporterid` FOREIGN KEY (`reporter`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `issues_reporterkeyid` FOREIGN KEY (`reporterkey`) REFERENCES `apikeys` (`userid`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `issues_reporterkeyid` FOREIGN KEY (`reporterKey`) REFERENCES `apikeys` (`userid`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

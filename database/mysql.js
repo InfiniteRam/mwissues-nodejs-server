@@ -43,8 +43,8 @@ module.exports = (function() {
   function checkIssueIDs(issue, checkReporter, checkAssignee, callback) {
 
     function doCheckReporter(cb) {
-      if (!issue.reporter && issue.reportername) {
-        getUserId(issue.reportername, function(err, id) {
+      if (!issue.reporter && issue.reporterName) {
+        getUserId(issue.reporterName, function(err, id) {
           if (err) {
             cb(err);
             return;
@@ -58,8 +58,8 @@ module.exports = (function() {
     }
 
     function doCheckAssignee(cb) {
-      if (!issue.assignee && issue.assigneename) {
-        getUserId(issue.assigneename, function(err, id) {
+      if (!issue.assignee && issue.assigneeName) {
+        getUserId(issue.assigneeName, function(err, id) {
           if (err) {
             cb(err);
             return;
@@ -182,8 +182,6 @@ module.exports = (function() {
     // Delete an issue
     deleteIssue: function(id, callback) {
 
-      issues.deleteScreenshot(issue);
-
       pool.query('UPDATE issues SET archived = TRUE, screenshot = NULL WHERE ?', {id: id}, function(err, result) {
         if (err) {
           callback(err);
@@ -201,12 +199,12 @@ module.exports = (function() {
     getIssue: function(id, callback) {
 
       pool.query(
-          'SELECT i.*, rep.login AS reportername, ass.login AS assigneename, ak.keyname AS reporterkeyname'
+          'SELECT i.*, rep.login AS reporterName, ass.login AS assigneeName, ak.keyname AS reporterKeyName'
           + ' FROM issues AS i'
           + ' LEFT JOIN users AS rep ON i.reporter = rep.id'
           + ' LEFT JOIN users AS ass ON i.assignee = ass.id'
-          + ' LEFT JOIN apikeys AS ak ON i.reporterkey = ak.id'
-          + ' WHERE ?', {id: id}, function(err, result) {
+          + ' LEFT JOIN apikeys AS ak ON i.reporterKey = ak.id'
+          + ' WHERE ?', {"i.id": id}, function(err, result) {
         if (err) {
           callback(err);
           return;
@@ -232,11 +230,11 @@ module.exports = (function() {
       }*/
 
       pool.query(
-          'SELECT i.*, rep.login AS reportername, ass.login AS assigneename, ak.keyname AS reporterkeyname'
+          'SELECT i.*, rep.login AS reporterName, ass.login AS assigneeName, ak.keyname AS reporterKeyName'
           + ' FROM issues AS i'
           + ' LEFT JOIN users AS rep ON i.reporter = rep.id'
           + ' LEFT JOIN users AS ass ON i.assignee = ass.id'
-          + ' LEFT JOIN apikeys AS ak ON i.reporterkey = ak.id'
+          + ' LEFT JOIN apikeys AS ak ON i.reporterKey = ak.id'
           + ' WHERE archived = FALSE ORDER BY id ASC', function(err, result) {
         if (err) {
           callback(err);
@@ -310,7 +308,7 @@ module.exports = (function() {
         }
 
         if (result.length == 0) {
-          callback('User not found');
+          callback({autherr:'User not found'});
           return;
         }
 
@@ -331,7 +329,7 @@ module.exports = (function() {
         }
 
         if (result.length == 0) {
-          callback('User id not found');
+          callback({autherr:'User id not found'});
           return;
         }
 
@@ -368,14 +366,14 @@ module.exports = (function() {
     getKeyInfo: function(key, callback) {
 
       pool.query('SELECT u.id AS userid, u.login AS username, k.id AS keyid, k.keyname, u.permissions AS uperms, k.permissions AS kperms FROM users u, apikeys k WHERE k.key = ? AND u.id = k.userid AND enabled = TRUE',
-          userid, function(err, result) {
+          key, function(err, result) {
         if (err) {
           callback(err);
           return;
         }
 
         if (result.length == 0) {
-          callback('User id not found');
+          callback({autherr:'Key not found'});
           return;
         }
 

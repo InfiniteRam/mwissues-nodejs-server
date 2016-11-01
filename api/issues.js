@@ -31,10 +31,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
+// We can't use __dirname in a subfolder
+var path = require('path');
+var appDir = path.dirname(require.main.filename);
+
+
 var multer = require('multer');
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, __dirname + '/screenshots');
+    cb(null, appDir + '/screenshots');
   },
   filename: function (req, file, cb) {
     console.log(file.mimetype);
@@ -95,7 +100,7 @@ app.post('/', upload.single('screenshot'), auth.sanitize, auth.enforce('create')
 
   // Set reporter & key from auth data
   issue.reporter = req.auth.userid;
-  issue.reporterkey = req.auth.keyid;
+  issue.reporterKey = req.auth.keyid;
 
   if (!issue || !issues.isComplete(issue))
   {
@@ -232,6 +237,8 @@ app.delete('/:issueId', auth.sanitize, auth.enforce('delete'),
       return;
     }
 
+    issues.deleteScreenshot(req.issue);
+
     if (req.auth.keyname)
       logger.info('#'+ req.issue.id +' deleted by '+ req.auth.username +'@'+ req.ip +' key '+ req.auth.keyname);
     else
@@ -261,7 +268,7 @@ app.get('/:issueId/screenshot', auth.sanitize, auth.enforce('view'),
   }
 
   res.sendFile(
-    __dirname + '/screenshots/' + req.issue.screenshot,
+    appDir + '/screenshots/' + req.issue.screenshot,
     null, function (err) {
       if (err) {
         logger.error(err);

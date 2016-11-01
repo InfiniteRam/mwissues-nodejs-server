@@ -16,6 +16,10 @@ var app = express();
 module.exports = app;
 
 
+var methodOverride = require('method-override');
+app.use(methodOverride());
+
+
 var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
