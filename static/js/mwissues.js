@@ -199,10 +199,10 @@ var mw = (function(){
     issueList.forEach(function(issue) {
       if (scenes.indexOf(issue.scene) === -1)
         scenes.push(issue.scene);
-      if (reporters.indexOf(issue.reporter) === -1)
-        reporters.push(issue.reporter);
-      if (issue.assignee && assignees.indexOf(issue.assignee) === -1)
-        assignees.push(issue.assignee);
+      if (reporters.indexOf(issue.reporterName) === -1)
+        reporters.push(issue.reporterName);
+      if (issue.assignee && assignees.indexOf(issue.assigneeName) === -1)
+        assignees.push(issue.assigneeName);
     });
 
     scenes.sort();
@@ -272,9 +272,9 @@ var mw = (function(){
     issueList.forEach(function(issue) {
 
       if (fScene && issue.scene !== fScene) return;
-      if (fReporter && issue.reporter !== fReporter) return;
+      if (fReporter && issue.reporterName !== fReporter) return;
       if (fAssignee && ((!issue.assignee && fAssignee !== "-")
-          || (issue.assignee && issue.assignee !== fAssignee))) return;
+          || (issue.assignee && issue.assigneeName !== fAssignee))) return;
       if ((fState & issue.state) === 0) return;
       if ((fCategory & issue.category) === 0) return;
 
