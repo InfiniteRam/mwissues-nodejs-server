@@ -98,19 +98,7 @@ var mw = (function(){
           return;
         }
 
-        bLoading.toggle(true);
-        ajaxRefreshIssues()
-          .always(function() {
-            bLoading.toggle(false);
-          })
-          .done(function() {
-            bIssues.toggle(true);
-            showTabs();
-            setActiveTab("issues");
-          })
-          .fail(function() {
-            bAuth.toggle(true);
-          });
+        onAuth();
       })
       .fail(function() {
         bAuth.toggle(true);
@@ -423,6 +411,51 @@ var mw = (function(){
     $("#tab-" + tab).addClass("active");
   }
 
+  function doTabIssues() {
+    if (isLoading) return; // TODO
+
+    setActiveTab("issues");
+
+    hideAllBlocks();
+
+    bLoading.toggle(true);
+
+    isLoading = true;
+    lockTabs(true);
+
+    ajaxRefreshIssues()
+      .always(function() {
+        isLoading = false;
+        lockTabs(false);
+        bLoading.toggle(false);
+        bIssues.toggle(true);
+      });
+  }
+
+  function doTabAdmin() {
+    if (isLoading) return;
+
+    setActiveTab("admin");
+
+    hideAllBlocks();
+
+    bAdmin.toggle(true);
+  }
+
+
+  function onAuth() {
+    var hash = window.location.hash;
+
+    showTabs();
+
+    console.log(hash);
+    if (hash === "#admin") {
+      doTabAdmin();
+    }
+    else {
+      doTabIssues();
+    }
+  }
 
   $(document).ready(function() {
     // Hooks
@@ -462,28 +495,18 @@ var mw = (function(){
     // Check session
     // Draw auth form if not connected or on error
     ajaxCheckAuth()
+      .always(function() {
+        bLoading.toggle(false);
+      })
       .done(function() {
         if ( typeof(aUserid) === "undefined" ) {
-          bLoading.toggle(false);
           bAuth.toggle(true);
           return;
         }
 
-        ajaxRefreshIssues()
-          .always(function() {
-            bLoading.toggle(false);
-          })
-          .done(function() {
-            bIssues.toggle(true);
-            showTabs();
-            setActiveTab("issues");
-          })
-          .fail(function() {
-            bAuth.toggle(true);
-          });
+        onAuth();
       })
       .fail(function() {
-        bLoading.toggle(false);
         bAuth.toggle(true);
       });
 
@@ -546,32 +569,11 @@ var mw = (function(){
 
 
     TabIssues: function() {
-      if (isLoading) return; // TODO
-
-      setActiveTab("issues");
-
-      hideAllBlocks();
-
-      bIssues.toggle(true);
-
-      isLoading = true;
-      lockTabs(true);
-
-      ajaxRefreshIssues()
-        .always(function() {
-          isLoading = false;
-          lockTabs(false);
-        });
+      doTabIssues();
     },
 
     TabAdmin: function() {
-      if (isLoading) return;
-
-      setActiveTab("admin");
-
-      hideAllBlocks();
-
-      bAdmin.toggle(true);
+      doTabAdmin();
     },
 
     SubmitRenameScene: function() {
